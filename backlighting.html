@@ -71,16 +71,32 @@
         th {
             background: #222;
         }
-        .copy-btn {
+        copy-btn {
             background: #87CEFA;
             border: none;
             color: black;
-            padding: 5px 10px;
-            cursor: pointer;
-            margin-top: 5px;
+            padding: auto 5px;
+            cursor: copy;
+            margin-top: 2px;
             display: block;
-            width: 100%;
-            box-sizing: border-box;
+            width: auto;
+
+        .copy-btn {
+            background: #87CEFA; /* Original button color */
+            border: none;
+            color: black;
+            padding: 3px 5px;
+            cursor: pointer;
+            margin-top: 2px;
+            display: block;
+            width: auto;
+            transition: background 0.3s ease-in-out; /* Smooth transition */
+        }
+
+        .copy-btn:hover {
+            background: #4682B4; /* Darker shade */
+        }
+
         }
     </style>
     <script>
