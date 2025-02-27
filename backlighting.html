@@ -53,10 +53,10 @@
             padding: 20px;
         }
         main h2 {
-            f
-        table {
-            width: 100%;ont-size: 2.2em;
+            font-size: 2.2em;
         }
+        table {
+            width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
             background: #444;
@@ -66,11 +66,29 @@
         th, td {
             border: 1px solid white;
             padding: 10px;
+            position: relative;
         }
         th {
             background: #222;
         }
+        .copy-btn {
+            background: #87CEFA;
+            border: none;
+            color: black;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin-top: 5px;
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+        }
     </style>
+    <script>
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+            });
+        }
+    </script>
 </head>
 <body>
     <header>
@@ -96,15 +114,9 @@
                 <th>Module 6</th>
                 <th>Module 7</th>
             </tr>
-            <tr><td>Red</td><td>504-001</td><td>505-001</td><td>509-001</td><td>510-001</td><td>514-001</td><td>515-001</td></tr>
-            <tr><td>Blue</td><td>504-002</td><td>505-002</td><td>509-002</td><td>510-002</td><td>514-002</td><td>515-002</td></tr>
-            <tr><td>Violet</td><td>504-003</td><td>505-003</td><td>509-003</td><td>510-003</td><td>514-003</td><td>515-003</td></tr>
-            <tr><td>Yellow</td><td>504-004</td><td>505-004</td><td>509-004</td><td>510-004</td><td>514-004</td><td>515-004</td></tr>
-            <tr><td>Orange</td><td>504-005</td><td>505-005</td><td>509-005</td><td>510-005</td><td>514-005</td><td>515-005</td></tr>
-            <tr><td>Green</td><td>504-006</td><td>505-006</td><td>509-006</td><td>510-006</td><td>514-000</td><td>515-006</td></tr>
-            <tr><td>Magenta</td><td>504-007</td><td>505-007</td><td>509-007</td><td>510-007</td><td>514-008</td><td>515-007</td></tr>
-            <tr><td>White</td><td>504-008</td><td>505-008</td><td>509-008</td><td>510-008</td><td>514-000</td><td>515-008</td></tr>
-            <tr><td>Off</td><td>504-000</td><td>505-000</td><td>509-000</td><td>510-000</td><td>514-000</td><td>515-000</td></tr>
+            <tr><td>Red</td><td>504-001 <button class="copy-btn" onclick="copyText('504-001')">Copy</button></td><td>505-001 <button class="copy-btn" onclick="copyText('505-001')">Copy</button></td><td>509-001 <button class="copy-btn" onclick="copyText('509-001')">Copy</button></td><td>510-001 <button class="copy-btn" onclick="copyText('510-001')">Copy</button></td><td>514-001 <button class="copy-btn" onclick="copyText('514-001')">Copy</button></td><td>515-001 <button class="copy-btn" onclick="copyText('515-001')">Copy</button></td></tr>
+            <tr><td>Blue</td><td>504-002 <button class="copy-btn" onclick="copyText('504-002')">Copy</button></td><td>505-002 <button class="copy-btn" onclick="copyText('505-002')">Copy</button></td><td>509-002 <button class="copy-btn" onclick="copyText('509-002')">Copy</button></td><td>510-002 <button class="copy-btn" onclick="copyText('510-002')">Copy</button></td><td>514-002 <button class="copy-btn" onclick="copyText('514-002')">Copy</button></td><td>515-002 <button class="copy-btn" onclick="copyText('515-002')">Copy</button></td></tr>
+            <tr><td>Violet</td><td>504-003 <button class="copy-btn" onclick="copyText('504-003')">Copy</button></td><td>505-003 <button class="copy-btn" onclick="copyText('505-003')">Copy</button></td><td>509-003 <button class="copy-btn" onclick="copyText('509-003')">Copy</button></td><td>510-003 <button class="copy-btn" onclick="copyText('510-003')">Copy</button></td><td>514-003 <button class="copy-btn" onclick="copyText('514-003')">Copy</button></td><td>515-003 <button class="copy-btn" onclick="copyText('515-003')">Copy</button></td></tr>
         </table>
     </main>
 </body>
