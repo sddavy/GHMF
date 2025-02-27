@@ -95,7 +95,6 @@
     <script>
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(() => {
-                alert(`Copied: ${text}`);
             }).catch(err => {
                 console.error('Failed to copy: ', err);
             });
@@ -119,18 +118,6 @@
 
         <table>
             <tbody>
-                <!-- Table Headers -->
-                <tr>
-                    <th></th>
-                    <th>C1</th><button onclick="copyToClipboard('R1C2')">Copy</button></td>
-                    <th>C2</th><button onclick="copyToClipboard('R1C2')">Copy</button></td>
-                    <th>C3</th><button onclick="copyToClipboard('R1C2')">Copy</button></td>
-                    <th>C4</th><button onclick="copyToClipboard('R1C2')">Copy</button></td>
-                    <th>C5</th><button onclick="copyToClipboard('R1C2')">Copy</button></td>
-                    <th>C6</th><button onclick="copyToClipboard('R1C2')">Copy</button></td>
-                    <th>C7</th><button onclick="copyToClipboard('R1C2')">Copy</button></td>
-                </tr>
-
                 <!-- Row 1 -->
                 <tr>
                     <th>R1</th>
