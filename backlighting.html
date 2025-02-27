@@ -41,19 +41,11 @@
             display: inline-block;
             font-size: 1.0em;
         }
-        nav a[href="index.html"] {
-            background: #98FB98;
-        }
-        nav a[href="about.html"] {
-            background: #FF0000;
-        }
-        nav a[href="backlighting.html"] {
-            background: #B8860B;
-        }
-        nav a[href="documentation.html"] {
-            background: #004d00;
-        }
-        nav a:hover, button {
+        nav a[href="index.html"] { background: #98FB98; }
+        nav a[href="about.html"] { background: #FF0000; }
+        nav a[href="backlighting.html"] { background: #B8860B; }
+        nav a[href="documentation.html"] { background: #004d00; }
+        nav a:hover {
             background: #87CEFA;
             color: black;
         }
@@ -61,40 +53,24 @@
             padding: 20px;
         }
         main h2 {
-            font-size: 2.2em;
-        }
+            f
         table {
-            width: 100%;
-            max-width: 600px;
+            width: 100%;ont-size: 2.2em;
+        }
             border-collapse: collapse;
             margin-top: 20px;
             background: #444;
             color: white;
+            text-align: center;
         }
         th, td {
             border: 1px solid white;
             padding: 10px;
-            text-align: center;
         }
         th {
             background: #222;
         }
-        button {
-            padding: 5px 10px;
-            border: none;
-            cursor: pointer;
-            font-size: 0.9em;
-            margin-top: 5px;
-        }
     </style>
-    <script>
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-            }).catch(err => {
-                console.error('Failed to copy: ', err);
-            });
-        }
-    </script>
 </head>
 <body>
     <header>
@@ -109,73 +85,26 @@
     </nav>
     <main>
         <h2>Backlighting</h2>
-        <p>UUse the table below to copy backlighting codes to use in the GHMF Software. Right-click on any square on the water timeline and select "Manual FCW Input" and paste the code into it, or press "W" and paste the code. Remember to turn off lights after turning them on.</p>
-
+        <p>Use the table below to copy backlighting codes to use in the GHMF Software. Right-click on any square on the water timeline and select "Manual FCW Input" and paste the code into it, or press "W" and paste the code. Remember to turn off lights after turning them on.</p>
         <table>
-            <tbody>
-                <tr>
-                    <th></th>
-                    <th>C1</th>
-                    <th>C2</th>
-                    <th>C3</th>
-                    <th>C4</th>
-                    <th>C5</th>
-                    <th>C6</th>
-                    <th>C7</th>
-                </tr>
-                
-                <!-- Rows -->
-                <tr>
-                    <th>R1</th>
-                    <td>R1C1 <br><button onclick="copyToClipboard('R1C1')">Copy</button></td>
-                    <td>R1C2</td>
-                    <td>R1C3</td>
-                    <td>R1C4</td>
-                    <td>R1C5</td>
-                    <td>R1C6</td>
-                    <td>R1C7</td>
-                </tr>
-                <tr>
-                    <th>R2</th>
-                    <td>R2C1 <br><button onclick="copyToClipboard('R2C1')">Copy</button></td>
-                    <td>R2C2</td>
-                    <td>R2C3</td>
-                    <td>R2C4</td>
-                    <td>R2C5</td>
-                    <td>R2C6</td>
-                    <td>R2C7</td>
-                </tr>
-                <tr>
-                    <th>R3</th>
-                    <td>R3C1 <br><button onclick="copyToClipboard('R3C1')">Copy</button></td>
-                    <td>R3C2</td>
-                    <td>R3C3</td>
-                    <td>R3C4</td>
-                    <td>R3C5</td>
-                    <td>R3C6</td>
-                    <td>R3C7</td>
-                </tr>
-                <tr>
-                    <th>R4</th>
-                    <td>R4C1 <br><button onclick="copyToClipboard('R4C1')">Copy</button></td>
-                    <td>R4C2</td>
-                    <td>R4C3</td>
-                    <td>R4C4</td>
-                    <td>R4C5</td>
-                    <td>R4C6</td>
-                    <td>R4C7</td>
-                </tr>
-                <tr>
-                    <th>R5</th>
-                    <td>R5C1 <br><button onclick="copyToClipboard('R5C1')">Copy</button></td>
-                    <td>R5C2</td>
-                    <td>R5C3</td>
-                    <td>R5C4</td>
-                    <td>R5C5</td>
-                    <td>R5C6</td>
-                    <td>R5C7</td>
-                </tr>
-            </tbody>
+            <tr>
+                <th>Color</th>
+                <th>Module 1</th>
+                <th>Module 2</th>
+                <th>Module 3</th>
+                <th>Module 5</th>
+                <th>Module 6</th>
+                <th>Module 7</th>
+            </tr>
+            <tr><td>Red</td><td>504-001</td><td>505-001</td><td>509-001</td><td>510-001</td><td>514-001</td><td>515-001</td></tr>
+            <tr><td>Blue</td><td>504-002</td><td>505-002</td><td>509-002</td><td>510-002</td><td>514-002</td><td>515-002</td></tr>
+            <tr><td>Violet</td><td>504-003</td><td>505-003</td><td>509-003</td><td>510-003</td><td>514-003</td><td>515-003</td></tr>
+            <tr><td>Yellow</td><td>504-004</td><td>505-004</td><td>509-004</td><td>510-004</td><td>514-004</td><td>515-004</td></tr>
+            <tr><td>Orange</td><td>504-005</td><td>505-005</td><td>509-005</td><td>510-005</td><td>514-005</td><td>515-005</td></tr>
+            <tr><td>Green</td><td>504-006</td><td>505-006</td><td>509-006</td><td>510-006</td><td>514-000</td><td>515-006</td></tr>
+            <tr><td>Magenta</td><td>504-007</td><td>505-007</td><td>509-007</td><td>510-007</td><td>514-008</td><td>515-007</td></tr>
+            <tr><td>White</td><td>504-008</td><td>505-008</td><td>509-008</td><td>510-008</td><td>514-000</td><td>515-008</td></tr>
+            <tr><td>Off</td><td>504-000</td><td>505-000</td><td>509-000</td><td>510-000</td><td>514-000</td><td>515-000</td></tr>
         </table>
     </main>
 </body>
