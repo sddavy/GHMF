@@ -63,7 +63,44 @@
         main h2 {
             font-size: 2.2em;
         }
+        table {
+            width: 100%;
+            max-width: 600px;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: #444;
+            color: white;
+        }
+        th, td {
+            border: 1px solid white;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background: #222;
+        }
+        button {
+            padding: 5px 10px;
+            border: none;
+            cursor: pointer;
+            background: #008000;
+            color: white;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        button:hover {
+            background: #00a000;
+        }
     </style>
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert(`Copied: ${text}`);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+    </script>
 </head>
 <body>
     <header>
@@ -79,6 +116,136 @@
     <main>
         <h2>Backlighting</h2>
         <p>Use the table below to copy backlighting codes to use in the GHMF Software. Right-click on any square on the water timeline and select "Manual FCW Input" and paste the code into it, or press "W" and paste the code. Remember to turn off lights after turning them on.</p>
+
+        <table>
+            <tbody>
+                <!-- Table Headers -->
+                <tr>
+                    <th></th>
+                    <th>C1</th>
+                    <th>C2</th>
+                    <th>C3</th>
+                    <th>C4</th>
+                    <th>C5</th>
+                    <th>C6</th>
+                    <th>C7</th>
+                </tr>
+
+                <!-- Row 1 -->
+                <tr>
+                    <th>R1</th>
+                    <td>R1C1</td>
+                    <td>R1C2 <br><button onclick="copyToClipboard('R1C2')">Copy</button></td>
+                    <td>R1C3 <br><button onclick="copyToClipboard('R1C3')">Copy</button></td>
+                    <td>R1C4 <br><button onclick="copyToClipboard('R1C4')">Copy</button></td>
+                    <td>R1C5 <br><button onclick="copyToClipboard('R1C5')">Copy</button></td>
+                    <td>R1C6 <br><button onclick="copyToClipboard('R1C6')">Copy</button></td>
+                    <td>R1C7 <br><button onclick="copyToClipboard('R1C7')">Copy</button></td>
+                </tr>
+
+                <!-- Row 2 -->
+                <tr>
+                    <th>R2</th>
+                    <td>R2C1</td>
+                    <td>R2C2 <br><button onclick="copyToClipboard('R2C2')">Copy</button></td>
+                    <td>R2C3 <br><button onclick="copyToClipboard('R2C3')">Copy</button></td>
+                    <td>R2C4 <br><button onclick="copyToClipboard('R2C4')">Copy</button></td>
+                    <td>R2C5 <br><button onclick="copyToClipboard('R2C5')">Copy</button></td>
+                    <td>R2C6 <br><button onclick="copyToClipboard('R2C6')">Copy</button></td>
+                    <td>R2C7 <br><button onclick="copyToClipboard('R2C7')">Copy</button></td>
+                </tr>
+
+                <!-- Row 3 -->
+                <tr>
+                    <th>R3</th>
+                    <td>R3C1</td>
+                    <td>R3C2 <br><button onclick="copyToClipboard('R3C2')">Copy</button></td>
+                    <td>R3C3 <br><button onclick="copyToClipboard('R3C3')">Copy</button></td>
+                    <td>R3C4 <br><button onclick="copyToClipboard('R3C4')">Copy</button></td>
+                    <td>R3C5 <br><button onclick="copyToClipboard('R3C5')">Copy</button></td>
+                    <td>R3C6 <br><button onclick="copyToClipboard('R3C6')">Copy</button></td>
+                    <td>R3C7 <br><button onclick="copyToClipboard('R3C7')">Copy</button></td>
+                </tr>
+
+                <tr>
+                    <th>R4</th>
+                    <td>R4C1</td>
+                    <td>R4C2 <br><button onclick="copyToClipboard('R3C2')">Copy</button></td>
+                    <td>R4C3 <br><button onclick="copyToClipboard('R3C3')">Copy</button></td>
+                    <td>R4C4 <br><button onclick="copyToClipboard('R3C4')">Copy</button></td>
+                    <td>R4C5 <br><button onclick="copyToClipboard('R3C5')">Copy</button></td>
+                    <td>R4C6 <br><button onclick="copyToClipboard('R3C6')">Copy</button></td>
+                    <td>R4C7 <br><button onclick="copyToClipboard('R3C7')">Copy</button></td>
+                </tr>
+
+                <tr>
+                    <th>R5</th>
+                    <td>R5C1</td>
+                    <td>R5C2 <br><button onclick="copyToClipboard('R3C2')">Copy</button></td>
+                    <td>R5C3 <br><button onclick="copyToClipboard('R3C3')">Copy</button></td>
+                    <td>R5C4 <br><button onclick="copyToClipboard('R3C4')">Copy</button></td>
+                    <td>R5C5 <br><button onclick="copyToClipboard('R3C5')">Copy</button></td>
+                    <td>R5C6 <br><button onclick="copyToClipboard('R3C6')">Copy</button></td>
+                    <td>R5C7 <br><button onclick="copyToClipboard('R3C7')">Copy</button></td>
+                </tr>
+
+                <tr>
+                    <th>R6</th>
+                    <td>R6C1</td>
+                    <td>R6C2 <br><button onclick="copyToClipboard('R3C2')">Copy</button></td>
+                    <td>R6C3 <br><button onclick="copyToClipboard('R3C3')">Copy</button></td>
+                    <td>R6C4 <br><button onclick="copyToClipboard('R3C4')">Copy</button></td>
+                    <td>R6C5 <br><button onclick="copyToClipboard('R3C5')">Copy</button></td>
+                    <td>R6C6 <br><button onclick="copyToClipboard('R3C6')">Copy</button></td>
+                    <td>R6C7 <br><button onclick="copyToClipboard('R3C7')">Copy</button></td>
+                </tr>
+
+                <tr>
+                    <th>R7</th>
+                    <td>R7C1</td>
+                    <td>R7C2 <br><button onclick="copyToClipboard('R3C2')">Copy</button></td>
+                    <td>R7C3 <br><button onclick="copyToClipboard('R3C3')">Copy</button></td>
+                    <td>R7C4 <br><button onclick="copyToClipboard('R3C4')">Copy</button></td>
+                    <td>R7C5 <br><button onclick="copyToClipboard('R3C5')">Copy</button></td>
+                    <td>R7C6 <br><button onclick="copyToClipboard('R3C6')">Copy</button></td>
+                    <td>R7C7 <br><button onclick="copyToClipboard('R3C7')">Copy</button></td>
+                </tr>
+
+                <tr>
+                    <th>R8</th>
+                    <td>R8C1</td>
+                    <td>R8C2 <br><button onclick="copyToClipboard('R3C2')">Copy</button></td>
+                    <td>R8C3 <br><button onclick="copyToClipboard('R3C3')">Copy</button></td>
+                    <td>R8C4 <br><button onclick="copyToClipboard('R3C4')">Copy</button></td>
+                    <td>R8C5 <br><button onclick="copyToClipboard('R3C5')">Copy</button></td>
+                    <td>R8C6 <br><button onclick="copyToClipboard('R3C6')">Copy</button></td>
+                    <td>R8C7 <br><button onclick="copyToClipboard('R3C7')">Copy</button></td>
+                </tr>
+
+                <tr>
+                    <th>R9</th>
+                    <td>R9C1</td>
+                    <td>R9C2 <br><button onclick="copyToClipboard('R3C2')">Copy</button></td>
+                    <td>R9C3 <br><button onclick="copyToClipboard('R3C3')">Copy</button></td>
+                    <td>R9C4 <br><button onclick="copyToClipboard('R3C4')">Copy</button></td>
+                    <td>R9C5 <br><button onclick="copyToClipboard('R3C5')">Copy</button></td>
+                    <td>R9C6 <br><button onclick="copyToClipboard('R3C6')">Copy</button></td>
+                    <td>R9C7 <br><button onclick="copyToClipboard('R3C7')">Copy</button></td>
+                </tr>
+                
+                <tr>
+                    <th>R10</th>
+                    <td>R10C1</td>
+                    <td>R10C2 <br><button onclick="copyToClipboard('R10C2')">Copy</button></td>
+                    <td>R10C3 <br><button onclick="copyToClipboard('R10C3')">Copy</button></td>
+                    <td>R10C4 <br><button onclick="copyToClipboard('R10C4')">Copy</button></td>
+                    <td>R10C5 <br><button onclick="copyToClipboard('R10C5')">Copy</button></td>
+                    <td>R10C6 <br><button onclick="copyToClipboard('R10C6')">Copy</button></td>
+                    <td>R10C7 <br><button onclick="copyToClipboard('R10C7')">Copy</button></td>
+                </tr>
+
+            </tbody>
+        </table>
     </main>
 </body>
 </html>
