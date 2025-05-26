@@ -39,7 +39,7 @@ Future improvements:
 
 I plan to use this website to bring future improvements such as a 3-dimensional ultra-realistic simulation, online free-to-use version of the software with additional features, complete modern documentation, and more.
 
-If you are interested in collaborating on this project, know of any useful tools, or have suggestions or even just ideas, please contact me at samuel.davy@icloud.com.
-This is a large project to take on alone and I would appriciate any help I could get, esspecially since I am not a professional at coding.
+If you are interested in collaborating on this project, know of any useful tools, have suggestions or even just ideas, please contact me at samuel.davy@icloud.com.
+This is a large project to take on alone and I would very much enjoy any help I could get, especially since I am not a professional at coding.
 
 Thank you :-)
