@@ -26,7 +26,7 @@ If you are curious about the fountain and it's history, you can learn more about
 About this website:
 -------------------
 
-This website was created by a choreographer, Samuel Davy, to help explain and simplify some of the aspects of programming, particularly the backlighting control. It is currently deployed to https://ghmfhelper.pages.dev/.
+This website was created by a choreographer, Samuel Davy, to help explain and simplify some of the aspects of programming, due to the lack of recent documentation and truly helpful resourses. It is currently deployed to https://ghmfhelper.pages.dev/.
  
 As a disclaimer, I do not own any of the documents published on this website, nor are they the property of any affiliate of this website. Please receive permission from their owner before using them for anyting but strictly personal use.
 This website is also not official, but rather a "Friends of the Fountain" created website, and does not have any affiliation with either the Grand Haven Musical Fountain Committee or the City of Grand Haven. Please contact the owner of this website if you have any copyright concerns and they will be addressed as soon as possible. You can contact me at samuel.davy@icloud.com.
