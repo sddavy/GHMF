@@ -68,7 +68,6 @@
   <script>
     const video = document.getElementById('video');
     const streamUrl = 'https://s78.ipcamlive.com/streams/4eyaqdwio6nlevp1t/stream.m3u8';
-
     if (Hls.isSupported()) {
       const hls = new Hls();
       hls.loadSource(streamUrl);
