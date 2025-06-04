@@ -216,29 +216,39 @@
 </div>
 
 <script>
-  const FORCE_SHOW_WARNING = true; // Overrides memory function for all users
+  const FORCE_SHOW_WARNING = false; // Set to true to override memory and always show
   const ORIGINAL_TITLE = document.title;
 
   function closeWarning() {
     const suppress = document.getElementById('suppress-warning').checked;
+
     if (suppress && !FORCE_SHOW_WARNING) {
-      localStorage.setItem('suppressWarning', 'true');
+      localStorage.setItem('suppressWarning', 'true'); // Never show again
+    } else {
+      sessionStorage.setItem('warningShownThisSession', 'true'); // Hide for session
     }
+
     document.getElementById('warning-popup').style.display = 'none';
     document.title = ORIGINAL_TITLE;
   }
 
-  // Simple URL regex to convert URLs to links
+  // Converts URLs into clickable links
   function linkify(text) {
     const urlRegex = /(\bhttps?:\/\/[^\s<>"]+[^\s<>.,:;"')\]])/gi;
-    return text.replace(urlRegex, url => `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`);
+    return text.replace(urlRegex, url =>
+      `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`
+    );
   }
 
-  // Decide which file to load
   const isFirstVisit = !localStorage.getItem('hasVisited');
-  const showPopup = FORCE_SHOW_WARNING || !localStorage.getItem('suppressWarning');
+  const suppressWarning = localStorage.getItem('suppressWarning') === 'true';
+  const alreadyShownThisSession = sessionStorage.getItem('warningShownThisSession') === 'true';
 
-  if (showPopup) {
+  const shouldShowPopup =
+    FORCE_SHOW_WARNING ||
+    (!suppressWarning && !alreadyShownThisSession);
+
+  if (shouldShowPopup) {
     const fileToLoad = isFirstVisit ? 'content/welcome.txt' : 'content/warning.txt';
 
     fetch(fileToLoad)
@@ -247,15 +257,11 @@
         return response.text();
       })
       .then(text => {
-        // Mark that user has visited after first welcome
         if (isFirstVisit) localStorage.setItem('hasVisited', 'true');
 
-        // Split text to get title and message
         const lines = text.split(/\r?\n/);
         const popupTitle = lines.shift() || "Notice";
         const popupMessageRaw = lines.join('\n').trim();
-
-        // Convert links + newlines
         const popupMessageHtml = linkify(popupMessageRaw).replace(/\n/g, '<br>');
 
         document.getElementById('warning-title').textContent = popupTitle;
