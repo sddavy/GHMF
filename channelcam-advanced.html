@@ -1,427 +1,251 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Advanced Channel Cam Viewer</title>
-<link rel="icon" href="assets/logo.png" type="image/png" />
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
-<style>
-  html, body {
-    margin: 0; 
-    padding: 0; 
-    height: 100%; 
-    background-color: #000; 
-    color: white; 
-    font-family: sans-serif;
-    display: flex; 
-    flex-direction: column; 
-    align-items: center;
-  }
-  body {
-    min-height: 100vh;
-  }
-  .video-container {
-    position: relative;
-    width: 100%;
-    max-width: 1400px;
-    background: #000;
-    user-select: none;
-    overflow: hidden;
-    border-radius: 6px;
-    cursor: grab;
-  }
-  .video-container:active {
-    cursor: grabbing;
-  }
-  video {
-    width: 100%;
-    height: 787.5px; /* 16:9 ratio for 1400px width */
-    display: block;
-    background: #000;
-    object-fit: contain;
-    transition: transform 0.2s ease;
-    transform-origin: 0 0; /* top-left origin to allow panning */
-    border-radius: 6px;
-    will-change: transform;
-    user-select: none;
-    pointer-events: all;
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GHMF Choreographers Helper | Advanced Channel Cam</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hls.js/1.4.10/hls.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #1a1a1a;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
 
-  #timestamp {
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0,0,0,0.5);
-    padding: 5px 10px;
-    font-size: 1rem;
-    display: none;
-    border-radius: 4px;
-    pointer-events: none;
-    user-select: none;
-    z-index: 10;
-    white-space: nowrap;
-  }
+    h1 {
+      color: #4ecdc4;
+      margin-bottom: 20px;
+    }
 
-  .controls-container {
-    max-width: 1400px;
-    margin: 15px 0 40px;
-    background: #111;
-    border-radius: 8px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    justify-content: center;
-    padding: 10px 15px;
-    user-select: none;
-  }
-  .controls-container button {
-    background: #222;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    padding: 10px 18px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-  }
-  .controls-container button:hover {
-    background: #444;
-  }
-  .custom-controls {
-    flex: 1 1 100%;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  /* Screen flash overlay only on video */
-  #flash {
-    pointer-events: none;
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: white;
-    opacity: 0;
-    z-index: 100;
-    border-radius: 6px;
-    transition: opacity 0.25s ease-out;
-  }
-  #flash.active {
-    opacity: 0.8;
-    transition: opacity 0.25s ease-in;
-  }
-</style>
+    .video-container {
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto;
+      background: #000;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    video {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .media-controls, .tools {
+      max-width: 1200px;
+      margin: 10px auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      padding: 10px;
+      background: #333;
+      border-radius: 8px;
+    }
+
+    .media-controls button, .tools button {
+      background: #555;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      padding: 10px;
+    }
+
+    .media-controls button:hover, .tools button:hover {
+      background: #666;
+    }
+
+    .media-controls img, .tools img {
+      width: 24px;
+      height: 24px;
+    }
+
+    button.active {
+      background: #4ecdc4;
+    }
+
+    .flash {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: white;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .flash.active {
+      opacity: 0.8;
+    }
+
+    .timestamp {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      background: rgba(0,0,0,0.7);
+      padding: 5px 10px;
+      border-radius: 3px;
+      font-size: 12px;
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .media-controls, .tools {
+        flex-direction: column;
+        padding: 10px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-<div class="video-container" id="videoContainer">
-  <video id="video" muted autoplay playsinline></video>
-  <div id="timestamp"></div>
-  <div id="flash"></div>
+<div class="video-container">
+  <video id="video" autoplay muted></video>
+  <div class="flash" id="flash"></div>
+  <div class="timestamp" id="timestamp"></div>
 </div>
 
-<div class="controls-container" id="controlsContainer">
-  <!-- Playback Controls -->
-  <div class="custom-controls" id="playbackControls">
-    <button id="playPauseBtn" title="Play/Pause">Play</button>
-    <button id="muteBtn" title="Mute/Unmute">Mute</button>
-    <button id="back5Btn" title="Back 5 Seconds">Back 5s</button>
-    <button id="back60Btn" title="Back 1 Minute">Back 1m</button>
-    <button id="pipBtn" title="Picture in Picture">PiP</button>
-    <button id="fullscreenBtn" title="Fullscreen">Fullscreen</button>
-  </div>
+<div class="media-controls">
+  <button onclick="togglePlay()" id="playBtn"><img src="https://img.icons8.com/ios-filled/50/play--v1.png" alt="Play"></button>
+  <button onclick="toggleMute()" id="muteBtn"><img src="https://img.icons8.com/ios-filled/50/no-audio--v1.png" alt="Mute"></button>
+  <button onclick="toggleFullscreen()"><img src="https://img.icons8.com/ios-filled/50/full-screen--v1.png" alt="Fullscreen"></button>
+</div>
 
-  <!-- Other Controls -->
-  <div class="custom-controls" id="otherControls">
-    <button id="zoomInBtn" title="Zoom In">Zoom In</button>
-    <button id="zoomOutBtn" title="Zoom Out">Zoom Out</button>
-    <button id="screenshotBtn" title="Take Screenshot">Screenshot</button>
-    <button id="recordBtn" title="Start Recording">Start Recording</button>
-    <button id="timestampBtn" title="Toggle Timestamp">Toggle Timestamp</button>
-  </div>
+<div class="tools">
+  <button onclick="refreshStream()">🔄</button>
+  <button onclick="takeScreenshot()">Screenshot</button>
+  <button onclick="toggleTimestamp()" id="timestampBtn">Toggle Timestamp</button>
+  <button onclick="toggleRecording()" id="recordBtn">🔴</button>
 </div>
 
 <script>
-  const video = document.getElementById('video');
-  const timestamp = document.getElementById('timestamp');
-  const container = document.getElementById('videoContainer');
-  const flash = document.getElementById('flash');
+const video = document.getElementById('video');
+const flash = document.getElementById('flash');
+const timestamp = document.getElementById('timestamp');
+const streamURL = "https://s78.ipcamlive.com/streams/4eyaqdwio6nlevp1t/stream.m3u8";
 
-  const streamUrl = 'https://s78.ipcamlive.com/streams/4eyaqdwio6nlevp1t/stream.m3u8';
+let hls = null;
+let recorder = null;
+let recording = false;
+let showTime = false;
 
-  // Setup HLS.js or native HLS playback
-  if (Hls.isSupported()) {
-    const hls = new Hls();
-    hls.loadSource(streamUrl);
+function loadStream() {
+  if (hls) {
+    hls.destroy();
+    hls = null;
+  }
+
+  if (streamURL.includes('.m3u8') && Hls.isSupported()) {
+    hls = new Hls();
+    hls.loadSource(streamURL);
     hls.attachMedia(video);
-    hls.on(Hls.Events.MANIFEST_PARSED, () => {
-      video.play();
-    });
+    hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
   } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-    video.src = streamUrl;
-    video.addEventListener('loadedmetadata', () => {
-      video.play();
-    });
+    video.src = streamURL;
+    video.play();
   } else {
-    container.innerHTML = '<p style="color: white; text-align: center;">Your browser does not support HLS playback. Please use a supported browser.</p>';
+    video.src = streamURL;
+    video.play();
   }
+}
 
-  // Playback controls elements
-  const playPauseBtn = document.getElementById('playPauseBtn');
-  const muteBtn = document.getElementById('muteBtn');
-  const back5Btn = document.getElementById('back5Btn');
-  const back60Btn = document.getElementById('back60Btn');
-  const pipBtn = document.getElementById('pipBtn');
-  const fullscreenBtn = document.getElementById('fullscreenBtn');
+function refreshStream() {
+  loadStream();
+}
 
-  // Other controls elements
-  const zoomInBtn = document.getElementById('zoomInBtn');
-  const zoomOutBtn = document.getElementById('zoomOutBtn');
-  const screenshotBtn = document.getElementById('screenshotBtn');
-  const recordBtn = document.getElementById('recordBtn');
-  const timestampBtn = document.getElementById('timestampBtn');
-
-  // Play/pause toggle
-  function togglePlayPause() {
-    if (video.paused) {
-      video.play();
-      playPauseBtn.textContent = 'Pause';
-    } else {
-      video.pause();
-      playPauseBtn.textContent = 'Play';
-    }
+function togglePlay() {
+  const btn = document.getElementById('playBtn').firstElementChild;
+  if (video.paused) {
+    video.play();
+    btn.src = "https://img.icons8.com/ios-filled/50/pause--v1.png";
+  } else {
+    video.pause();
+    btn.src = "https://img.icons8.com/ios-filled/50/play--v1.png";
   }
-  playPauseBtn.addEventListener('click', togglePlayPause);
+}
 
-  // Mute/unmute toggle
-  function toggleMute() {
-    video.muted = !video.muted;
-    muteBtn.textContent = video.muted ? 'Unmute' : 'Mute';
+function toggleMute() {
+  const btn = document.getElementById('muteBtn').firstElementChild;
+  video.muted = !video.muted;
+  btn.src = video.muted ? "https://img.icons8.com/ios-filled/50/no-audio--v1.png" : "https://img.icons8.com/ios-filled/50/high-volume--v1.png";
+}
+
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    video.parentElement.requestFullscreen();
+  } else {
+    document.exitFullscreen();
   }
-  muteBtn.addEventListener('click', toggleMute);
+}
 
-  // Back 5 seconds
-  back5Btn.addEventListener('click', () => {
-    video.currentTime = Math.max(0, video.currentTime - 5);
+function takeScreenshot() {
+  if (video.videoWidth === 0) return;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext('2d').drawImage(video, 0, 0);
+
+  flash.classList.add('active');
+  setTimeout(() => flash.classList.remove('active'), 200);
+
+  canvas.toBlob(blob => {
+    const date = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+    saveAs(blob, `screenshot-${date}.png`);
   });
+}
 
-  // Back 1 minute
-  back60Btn.addEventListener('click', () => {
-    video.currentTime = Math.max(0, video.currentTime - 60);
-  });
+function toggleTimestamp() {
+  const btn = document.getElementById('timestampBtn');
+  showTime = !showTime;
+  timestamp.style.display = showTime ? 'block' : 'none';
+  btn.textContent = showTime ? 'Toggle Timestamp' : 'Toggle Timestamp';
+  btn.classList.toggle('active', showTime);
+}
 
-  // Picture in Picture toggle
-  pipBtn.addEventListener('click', async () => {
+function toggleRecording() {
+  const btn = document.getElementById('recordBtn');
+
+  if (!recording) {
     try {
-      if (document.pictureInPictureElement) {
-        await document.exitPictureInPicture();
-      } else {
-        if (video.readyState === 4) {
-          await video.requestPictureInPicture();
-        }
-      }
-    } catch (err) {
-      alert('Picture-in-Picture not supported or failed.');
-    }
-  });
-
-  // Fullscreen toggle
-  fullscreenBtn.addEventListener('click', () => {
-    if (!document.fullscreenElement) {
-      container.requestFullscreen();
-    } else {
-      document.exitFullscreen();
-    }
-  });
-
-  // Zoom and pan setup
-  let zoomLevel = 1;
-  const zoomStep = 0.2;
-  const maxZoom = 5;
-  const minZoom = 1;
-
-  // Current pan offsets (in pixels)
-  let offsetX = 0;
-  let offsetY = 0;
-
-  // Dragging state
-  let isDragging = false;
-  let dragStartX = 0;
-  let dragStartY = 0;
-  let initialOffsetX = 0;
-  let initialOffsetY = 0;
-
-  function clamp(value, min, max) {
-    return Math.min(max, Math.max(min, value));
-  }
-
-  function updateTransform() {
-    // Limit panning so video can't be dragged beyond edges
-    const containerRect = container.getBoundingClientRect();
-
-    const scaledWidth = video.videoWidth * zoomLevel;
-    const scaledHeight = video.videoHeight * zoomLevel;
-
-    const maxOffsetX = 0;
-    const maxOffsetY = 0;
-
-    const minOffsetX = Math.min(containerRect.width - scaledWidth, 0);
-    const minOffsetY = Math.min(containerRect.height - scaledHeight, 0);
-
-    offsetX = clamp(offsetX, minOffsetX, maxOffsetX);
-    offsetY = clamp(offsetY, minOffsetY, maxOffsetY);
-
-    video.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${zoomLevel})`;
-  }
-
-  // Zoom function (zoom toward center or mouse position)
-  function zoom(newZoom, centerX, centerY) {
-    if (newZoom < minZoom || newZoom > maxZoom) return;
-
-    const rect = video.getBoundingClientRect();
-
-    const dx = centerX - rect.left;
-    const dy = centerY - rect.top;
-
-    const scaleChange = newZoom / zoomLevel;
-
-    offsetX = (offsetX - dx) * scaleChange + dx;
-    offsetY = (offsetY - dy) * scaleChange + dy;
-
-    zoomLevel = newZoom;
-    updateTransform();
-  }
-
-  // Zoom with mouse wheel on container
-  container.addEventListener('wheel', e => {
-    e.preventDefault();
-    const delta = e.deltaY < 0 ? zoomStep : -zoomStep;
-    zoom(clamp(zoomLevel + delta, minZoom, maxZoom), e.clientX, e.clientY);
-  }, { passive: false });
-
-  // Zoom In and Zoom Out button handlers
-  function zoomIn() {
-    const rect = container.getBoundingClientRect();
-    zoom(Math.min(maxZoom, zoomLevel + zoomStep), rect.left + rect.width / 2, rect.top + rect.height / 2);
-  }
-
-  function zoomOut() {
-    const rect = container.getBoundingClientRect();
-    zoom(Math.max(minZoom, zoomLevel - zoomStep), rect.left + rect.width / 2, rect.top + rect.height / 2);
-  }
-
-  zoomInBtn.addEventListener('click', zoomIn);
-  zoomOutBtn.addEventListener('click', zoomOut);
-
-  // Mouse drag panning
-  container.addEventListener('mousedown', e => {
-    if (zoomLevel <= 1) return; // no panning if not zoomed in
-    isDragging = true;
-    dragStartX = e.clientX;
-    dragStartY = e.clientY;
-    initialOffsetX = offsetX;
-    initialOffsetY = offsetY;
-    e.preventDefault();
-  });
-
-  window.addEventListener('mouseup', e => {
-    if (isDragging) {
-      isDragging = false;
-      e.preventDefault();
-    }
-  });
-
-  window.addEventListener('mousemove', e => {
-    if (!isDragging) return;
-    const dx = e.clientX - dragStartX;
-    const dy = e.clientY - dragStartY;
-    offsetX = initialOffsetX + dx;
-    offsetY = initialOffsetY + dy;
-    updateTransform();
-    e.preventDefault();
-  });
-
-  // Screenshot function with flash effect
-  function doFlash() {
-    flash.classList.add('active');
-    setTimeout(() => flash.classList.remove('active'), 200);
-  }
-  function formatDate(date) {
-    const pad = n => n.toString().padStart(2,'0');
-    return date.getFullYear() +
-           pad(date.getMonth() + 1) +
-           pad(date.getDate()) + '_' +
-           pad(date.getHours()) +
-           pad(date.getMinutes()) +
-           pad(date.getSeconds());
-  }
-  function takeScreenshot() {
-    if (video.videoWidth === 0 || video.videoHeight === 0) {
-      alert('Video not ready for screenshot.');
-      return;
-    }
-    const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    canvas.toBlob(blob => {
-      if (blob) {
-        const filename = `screenshot-${formatDate(new Date())}.png`;
-        saveAs(blob, filename);
-        doFlash();
-      }
-    });
-  }
-  screenshotBtn.addEventListener('click', takeScreenshot);
-
-  // Recording setup
-  let recorder;
-  let recording = false;
-  let chunks = [];
-
-  function toggleRecording() {
-    if (!recording) {
-      if (!video.captureStream) {
-        alert('Recording not supported in this browser.');
-        return;
-      }
       const stream = video.captureStream();
-      recorder = new MediaRecorder(stream);
+      recorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
+      const chunks = [];
+
       recorder.ondataavailable = e => chunks.push(e.data);
       recorder.onstop = () => {
         const blob = new Blob(chunks, { type: 'video/webm' });
-        saveAs(blob, `recording-${formatDate(new Date())}.webm`);
-        chunks = [];
+        const date = new Date().toISOString().slice(0, 19).replace(/:/g, '-');
+        const file = new File([blob], `recording-${date}.mp4`, { type: 'video/mp4' });
+        saveAs(file);
       };
+
       recorder.start();
       recording = true;
-      recordBtn.textContent = 'Stop Recording';
-    } else {
-      recorder.stop();
-      recording = false;
-      recordBtn.textContent = 'Start Recording';
+      btn.textContent = '⏹️';
+      btn.classList.add('active');
+    } catch (e) {
+      alert('Recording not supported');
     }
+  } else {
+    recorder.stop();
+    recording = false;
+    btn.textContent = '🔴';
+    btn.classList.remove('active');
   }
-  recordBtn.addEventListener('click', toggleRecording);
+}
 
-  // Timestamp toggle and update
-  let showTimestamp = false;
-  timestampBtn.addEventListener('click', () => {
-    showTimestamp = !showTimestamp;
-    timestamp.style.display = showTimestamp ? 'block' : 'none';
-  });
+setInterval(() => {
+  if (showTime) {
+    timestamp.textContent = new Date().toLocaleTimeString();
+  }
+}, 1000);
 
-  setInterval(() => {
-    if (showTimestamp) {
-      const now = new Date();
-      timestamp.textContent = now.toLocaleTimeString();
-    }
-  }, 1000);
-
+window.addEventListener('load', loadStream);
 </script>
 
 </body>
