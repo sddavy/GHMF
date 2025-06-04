@@ -210,6 +210,12 @@
     document.title = ORIGINAL_TITLE;
   }
 
+  // Simple URL regex to find http/https links
+  function linkify(text) {
+    const urlRegex = /(\bhttps?:\/\/[^\s<>"]+[^\s<>.,:;"')\]])/gi;
+    return text.replace(urlRegex, url => `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`);
+  }
+
   if (FORCE_SHOW_WARNING || !localStorage.getItem('suppressWarning')) {
     fetch('warning.txt')
       .then(response => {
@@ -220,11 +226,14 @@
         // Split into lines
         const lines = text.split(/\r?\n/);
         const popupTitle = lines.shift() || "Warning";
-        const popupMessage = lines.join('\n').trim();
+        const popupMessageRaw = lines.join('\n').trim();
 
-        // Set title in popup and page
+        // Convert URLs to links and newlines to <br>
+        const popupMessageHtml = linkify(popupMessageRaw).replace(/\n/g, '<br>');
+
+        // Set title and message
         document.getElementById('warning-title').textContent = popupTitle;
-        document.getElementById('warning-text').textContent = popupMessage;
+        document.getElementById('warning-text').innerHTML = popupMessageHtml;
         document.title = popupTitle;
 
         document.getElementById('warning-popup').style.display = 'flex';
