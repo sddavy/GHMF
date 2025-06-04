@@ -80,7 +80,7 @@
             font-size: 2.2em;
         }
 
-        /* Begin notification section */
+        /* Begin notification styles */
         .popup {
             position: fixed; top: 0; left: 0;
             width: 100vw; height: 100vh;
@@ -160,7 +160,6 @@
                 border-radius: 6px;
                 cursor: pointer;
             }
-            /* End notification section */
         }
         #warning-text a {
           color: #87CEFA;
@@ -172,15 +171,20 @@
           color: #6495ED;
           cursor: pointer;
         }
+        /* End notification styles */
+        
     </style>
 </head>
 <body>
-    
+
+    <!-- Begin header -->
     <header>
         <img src="assets/logo.png" alt="Logo">
         <h1>Choreographers Helper</h1>
     </header>
+    <!-- End header -->
     
+    <!-- Begin tabs -->
     <nav>
         <a href="index.html">Home</a>
         <a href="about.html">About</a>
@@ -188,20 +192,23 @@
         <a href="documentation.html">Documentation</a>
         <a href="channelcam.html">Channel Cam</a>
     </nav>
+    <!-- End tabs -->
     
+    <!-- Begin main content -->
     <main>
-        <h2>Welcome to GHMF Choreographers Helper</h2>
+        <h2>Welcome to GHMF Choreographers Helper</h2>  <!-- Header -->
         <p>This website offers tools and resources to simplify the process of choreographing shows for the Grand Haven Musical Fountain. Site is still in development, so expect changes.</p>
     </main>
-
+    <!-- End main content -->
+    
 <!-- Begin notification section -->
 <div id="warning-popup" class="popup" style="display: none;">
   <div class="popup-content">
-    <h2 id="warning-title">Important Update</h2>
-    <div id="warning-text" style="margin-bottom: 20px; text-align: left;">Loading...</div>
+    <h2 id="warning-title">Loading...</h2>
+    <div id="warning-text" style="margin-bottom: 20px; text-align: left;"></div>
     
     <label style="display: block; margin-bottom: 20px; font-size: 1rem;">
-      <input type="checkbox" id="suppress-warning"> Never show me notifications again
+      <input type="checkbox" id="suppress-warning"> Don't show me updates
     </label>
 
     <button onclick="closeWarning()">Close</button>
@@ -209,7 +216,7 @@
 </div>
 
 <script>
-  const FORCE_SHOW_WARNING = true; // Override memory check
+  const FORCE_SHOW_WARNING = false; // Overrides memory function for all users
   const ORIGINAL_TITLE = document.title;
 
   function closeWarning() {
@@ -221,28 +228,36 @@
     document.title = ORIGINAL_TITLE;
   }
 
-  // Simple URL regex to find http/https links
+  // Simple URL regex to convert URLs to links
   function linkify(text) {
     const urlRegex = /(\bhttps?:\/\/[^\s<>"]+[^\s<>.,:;"')\]])/gi;
     return text.replace(urlRegex, url => `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`);
   }
 
-  if (FORCE_SHOW_WARNING || !localStorage.getItem('suppressWarning')) {
-    fetch('warning.txt')
+  // Decide which file to load
+  const isFirstVisit = !localStorage.getItem('hasVisited');
+  const showPopup = FORCE_SHOW_WARNING || !localStorage.getItem('suppressWarning');
+
+  if (showPopup) {
+    const fileToLoad = isFirstVisit ? 'welcome.txt' : 'warning.txt';
+
+    fetch(fileToLoad)
       .then(response => {
-        if (!response.ok) throw new Error('Failed to load warning.txt');
+        if (!response.ok) throw new Error(`Failed to load ${fileToLoad}`);
         return response.text();
       })
       .then(text => {
-        // Split into lines
+        // Mark that user has visited after first welcome
+        if (isFirstVisit) localStorage.setItem('hasVisited', 'true');
+
+        // Split text to get title and message
         const lines = text.split(/\r?\n/);
-        const popupTitle = lines.shift() || "Warning";
+        const popupTitle = lines.shift() || "Notice";
         const popupMessageRaw = lines.join('\n').trim();
 
-        // Convert URLs to links and newlines to <br>
+        // Convert links + newlines
         const popupMessageHtml = linkify(popupMessageRaw).replace(/\n/g, '<br>');
 
-        // Set title and message
         document.getElementById('warning-title').textContent = popupTitle;
         document.getElementById('warning-text').innerHTML = popupMessageHtml;
         document.title = popupTitle;
@@ -250,11 +265,11 @@
         document.getElementById('warning-popup').style.display = 'flex';
       })
       .catch(err => {
-        console.error('Failed to load warning:', err);
+        console.error('Failed to load popup text:', err);
       });
   }
 </script>
 <!-- End notification section -->
-
+    
 </body>
 </html>
