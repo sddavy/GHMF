@@ -108,17 +108,19 @@
         }
         .video-crop {
           width: 800px;
-          height: 435px; /* 450px original height - 15px crop */
+          height: 430px; /* Crop video to remove top watermark, which the camera itself adds */
           overflow: hidden;
           border-radius: 12px;
         }
         
         .rounded-video {
-          margin-top: -15px; /* move video up to crop top */
+          margin-top: -15px;
           width: 100%;
           height: 450px;
           border: none;
         }
+        
+        /* Change style on smaller screens */
         @media (max-width: 600px) {
             header img {
                 height: 90px;
@@ -150,15 +152,17 @@
             }
             
     </style>
-
 </head>
 <body>
     
+    <!-- Begin header -->
     <header>
         <img src="assets/logo.png" alt="Logo">
         <h1>Choreographers Helper</h1>
     </header>
+    <!-- End header -->
     
+    <!-- Begin tab section -->
     <nav>
         <a href="index.html">Home</a>
         <a href="about.html">About</a>
@@ -166,27 +170,38 @@
         <a href="documentation.html">Documentation</a>
         <a href="channelcam.html">Channel Cam</a>
     </nav>
+    <!-- End tab section -->
    
     <main>
-        <h2>Channel Cam</h2>
+        
+        <h2>Channel Cam</h2> <!-- Title -->
+
+        <!-- Begin main text -->
         <p>
             92.1 WGHN "The Channel" is a local radio station in Grand Haven, MI. They host live IP cameras in two locations in Grand Haven, one of which, the "Channel Cam", is located outside of the Lynne Sherwood waterfront stadium and can be panned either towards the mouth of the harbor or towards the Grand Haven Musical Fountain.
             When focused towards the Fountain, it can be used to view any one of the Fountains shows.
         </p>
+        <!-- End main text -->
         
+        <!-- Begin secondary text -->
         <p>
             Although the camera can be viewed from the official WGHN website, the unwanted ads and unusual layout make viewing it difficult to enjoy viewing. To fix this problem, the live feed can be found below, and a simple version can be found at the button below.
         </p>
-        
+        <!-- End secondary text -->        
+
+        <!-- This is the webcam feed from the WGHN website, except wrapped in a custom wrapper to crop out the watermark -->
         <div class="video-crop">
           <iframe class="rounded-video" src="https://g1.ipcamlive.com/player/player.php?alias=62851eba65dbc" width="800px" height="450px" frameborder="0" allowfullscreen></iframe>
         </div>
-                
-        <p>
-        
+         
+       
+        <p>  <!-- Deadspace for cleaner look -->
         </p>
+
+        <!-- Buttons to other links -->
         <a href="https://ghmfhelper.pages.dev/channelcamera/" class="ghmf-button" target="_self">View simple version</a>
         <a href="https://wghn.com/channel-cam/" class="wghn-button" target="_blank">View on the WGHN website</a>
+
     </main>
 </body>
 </html>
