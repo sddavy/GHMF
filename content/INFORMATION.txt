@@ -1,0 +1,6 @@
+When visiting the site for the first time, a notification pops up, and rather than hardcoding the message into all the files, I instead pull it from a welcome.txt file found in the /content folder. (Where this file is)
+This makes it easier to update the website dynamically.
+
+When visiting the site any other time, it displays another popup, which is pulled from the warning.txt file found in this folder as well. I can then just update the text file instead of every page on the webiste when I want users to get a notification.
+
+Both popups have a "Never show me notifications again" checkbox, which when checked and the close button is pressed, saves a flag to local storage to never display notifications again.
