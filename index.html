@@ -127,34 +127,6 @@
                   border-radius: 8px; cursor: pointer;
             }
     </style>
-    
-<!-- Begin notification section -->
-<script>
-    function showPopup(filename) {
-      fetch(filename).then(r => r.text()).then(data => {
-        document.getElementById('popup-text').textContent = data;
-        document.getElementById('popup').style.display = 'flex';
-      });
-    }
-    
-    function dismissPopup() {
-      document.getElementById('popup').style.display = 'none';
-      sessionStorage.setItem("sawWarning", "true");
-      localStorage.setItem("sawWelcome", "true");
-    }
-    
-    function setNoUpdates(checked) {
-      localStorage.setItem("noUpdates", checked ? "true" : "false");
-    }
-    
-    if (!localStorage.getItem("sawWelcome")) {
-      showPopup("welcome.txt");
-    } else if (!sessionStorage.getItem("sawWarning") && localStorage.getItem("noUpdates") !== "true") {
-      showPopup("warning.txt");
-    }
-</script>
-<!-- Begin notification section -->
-    
 </head>
 <body>
     
@@ -176,67 +148,32 @@
         <p>This website offers tools and resources to simplify the process of choreographing shows for the Grand Haven Musical Fountain. Site is still in development, so expect changes.</p>
     </main>
 
-    
+
 <!-- Begin notification section -->
-<div id="modalOverlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background-color:rgba(0,0,0,0.7); z-index:9999; justify-content:center; align-items:center; font-family:sans-serif;">
-  <div id="modalBox" style="background:#222; color:white; padding:20px; border-radius:8px; max-width:600px; width:90%; max-height:80vh; overflow:auto; position:relative;">
-    <pre id="modalText" style="white-space:pre-wrap;"></pre>
-    <label id="modalCheckboxContainer" style="display:block; margin:15px 0; display:none;">
-      <input type="checkbox" id="suppressUpdates"> Do not display updates again
-    </label>
-    <button onclick="dismissModal()" style="background:red; color:white; border:none; padding:8px 14px; cursor:pointer; border-radius:4px;">Dismiss</button>
+<div id="warning-popup" class="popup" style="display: none;">
+  <div class="popup-content">
+    <div id="warning-text">Loading...</div>
+    <br>
+    <button onclick="document.getElementById('warning-popup').style.display='none'">Close</button>
   </div>
 </div>
 
 <script>
-  function showModal(content, showCheckbox = false) {
-    document.getElementById('modalText').textContent = content;
-    document.getElementById('modalOverlay').style.display = 'flex';
-    document.getElementById('modalCheckboxContainer').style.display = showCheckbox ? 'block' : 'none';
-  }
-
-  function dismissModal() {
-    document.getElementById('modalOverlay').style.display = 'none';
-    if (sessionStorage.getItem('showingWarning')) {
-      sessionStorage.setItem('warningDismissed', 'true');
-      if (document.getElementById('suppressUpdates').checked) {
-        localStorage.setItem('suppressWarnings', 'true');
-      }
-    }
-  }
-
-  window.addEventListener('load', () => {
-    const firstVisit = !localStorage.getItem('visited');
-    const suppressWarnings = localStorage.getItem('suppressWarnings') === 'true';
-    const warningDismissed = sessionStorage.getItem('warningDismissed') === 'true';
-
-    if (firstVisit) {
-      fetch('welcome.txt')
-        .then(res => res.text())
-        .then(text => {
-          showModal(text);
-          localStorage.setItem('visited', 'true');
-        });
-    } else if (!suppressWarnings && !warningDismissed) {
-      fetch('warning.txt')
-        .then(res => res.text())
-        .then(text => {
-          sessionStorage.setItem('showingWarning', 'true');
-          showModal(text, true); // show modal and checkbox
-        });
-    }
-  });
+  fetch('warning.txt')
+    .then(response => {
+      if (!response.ok) throw new Error('Failed to load warning.txt');
+      return response.text();
+    })
+    .then(text => {
+      document.getElementById('warning-text').textContent = text;
+      document.getElementById('warning-popup').style.display = 'flex';
+    })
+    .catch(error => {
+      console.error('Warning popup error:', error);
+    });
 </script>
+<!-- End notification section -->
 
-    <div id="popup" class="popup" style="display:none;">
-  <div class="popup-content">
-    <pre id="popup-text">Loading...</pre>
-    <label><input type="checkbox" id="no-updates" onchange="setNoUpdates(this.checked)"> Don’t show updates again</label>
-    <br><br>
-    <button onclick="dismissPopup()">Dismiss</button>
-  </div>
-</div>
-    <!-- End notification section -->
-    
+
 </body>
 </html>
