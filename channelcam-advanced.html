@@ -9,8 +9,15 @@
 <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
 <style>
   html, body {
-    margin: 0; padding: 0; height: 100%; background-color: #000; color: white; font-family: sans-serif;
-    display: flex; flex-direction: column; align-items: center;
+    margin: 0; 
+    padding: 0; 
+    height: 100%; 
+    background-color: #000; 
+    color: white; 
+    font-family: sans-serif;
+    display: flex; 
+    flex-direction: column; 
+    align-items: center;
   }
   body {
     min-height: 100vh;
@@ -30,16 +37,18 @@
   }
   video {
     width: 100%;
-    height: 787.5px; /* 16:9 ratio for 1400px wide */
+    height: 787.5px; /* 16:9 ratio for 1400px width */
     display: block;
     background: #000;
     object-fit: contain;
     transition: transform 0.2s ease;
-    transform-origin: 0 0; /* top-left origin to allow panning based on transform translate */
+    transform-origin: 0 0; /* top-left origin to allow panning */
     border-radius: 6px;
     will-change: transform;
     user-select: none;
     pointer-events: all;
+  }
+
   #timestamp {
     position: absolute;
     bottom: 10px;
@@ -55,6 +64,7 @@
     z-index: 10;
     white-space: nowrap;
   }
+
   .controls-container {
     max-width: 1400px;
     margin: 15px 0 40px;
@@ -114,7 +124,6 @@
 </div>
 
 <div class="controls-container" id="controlsContainer">
-
   <!-- Playback Controls -->
   <div class="custom-controls" id="playbackControls">
     <button id="playPauseBtn" title="Play/Pause">Play</button>
@@ -135,9 +144,6 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-
 <script>
   const video = document.getElementById('video');
   const timestamp = document.getElementById('timestamp');
@@ -146,18 +152,24 @@
 
   const streamUrl = 'https://s78.ipcamlive.com/streams/4eyaqdwio6nlevp1t/stream.m3u8';
 
-  // Setup HLS.js or native HLS
+  // Setup HLS.js or native HLS playback
   if (Hls.isSupported()) {
     const hls = new Hls();
     hls.loadSource(streamUrl);
     hls.attachMedia(video);
+    hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      video.play();
+    });
   } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
     video.src = streamUrl;
+    video.addEventListener('loadedmetadata', () => {
+      video.play();
+    });
   } else {
     container.innerHTML = '<p style="color: white; text-align: center;">Your browser does not support HLS playback. Please use a supported browser.</p>';
   }
 
-  // Playback Controls Elements
+  // Playback controls elements
   const playPauseBtn = document.getElementById('playPauseBtn');
   const muteBtn = document.getElementById('muteBtn');
   const back5Btn = document.getElementById('back5Btn');
@@ -165,7 +177,7 @@
   const pipBtn = document.getElementById('pipBtn');
   const fullscreenBtn = document.getElementById('fullscreenBtn');
 
-  // Other Controls Elements
+  // Other controls elements
   const zoomInBtn = document.getElementById('zoomInBtn');
   const zoomOutBtn = document.getElementById('zoomOutBtn');
   const screenshotBtn = document.getElementById('screenshotBtn');
@@ -231,11 +243,11 @@
   const maxZoom = 5;
   const minZoom = 1;
 
-  // Track current pan offsets (in pixels)
+  // Current pan offsets (in pixels)
   let offsetX = 0;
   let offsetY = 0;
 
-  // Track dragging state
+  // Dragging state
   let isDragging = false;
   let dragStartX = 0;
   let dragStartY = 0;
@@ -248,16 +260,11 @@
 
   function updateTransform() {
     // Limit panning so video can't be dragged beyond edges
-    // Calculate max pan offset based on zoom and container/video size
-    const videoRect = video.getBoundingClientRect();
     const containerRect = container.getBoundingClientRect();
 
     const scaledWidth = video.videoWidth * zoomLevel;
     const scaledHeight = video.videoHeight * zoomLevel;
 
-    // Calculate max translateX and Y to prevent blank space:
-    // The video can move between max 0 (left/top edge aligned)
-    // and min negative offset equal to scaledWidth - container width
     const maxOffsetX = 0;
     const maxOffsetY = 0;
 
@@ -270,56 +277,48 @@
     video.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${zoomLevel})`;
   }
 
-  // Zoom function that zooms toward mouse pointer position
+  // Zoom function (zoom toward center or mouse position)
   function zoom(newZoom, centerX, centerY) {
     if (newZoom < minZoom || newZoom > maxZoom) return;
-  
-    // Get bounding rect of video to calculate offset relative to video
+
     const rect = video.getBoundingClientRect();
-  
-    // Mouse position relative to video top-left
+
     const dx = centerX - rect.left;
     const dy = centerY - rect.top;
-  
-    // Scale change factor
+
     const scaleChange = newZoom / zoomLevel;
-  
-    // Adjust offsetX and offsetY to keep the point under mouse stable
+
     offsetX = (offsetX - dx) * scaleChange + dx;
     offsetY = (offsetY - dy) * scaleChange + dy;
-  
+
     zoomLevel = newZoom;
     updateTransform();
   }
 
-  // Mouse wheel zoom on video container, zoom toward mouse position
+  // Zoom with mouse wheel on container
   container.addEventListener('wheel', e => {
     e.preventDefault();
     const delta = e.deltaY < 0 ? zoomStep : -zoomStep;
     zoom(clamp(zoomLevel + delta, minZoom, maxZoom), e.clientX, e.clientY);
   }, { passive: false });
 
+  // Zoom In and Zoom Out button handlers
   function zoomIn() {
-    zoom( Math.min(maxZoom, zoomLevel + zoomStep), container.clientWidth / 2 + container.getBoundingClientRect().left, container.getBoundingClientRect().top + container.clientHeight / 2);
+    const rect = container.getBoundingClientRect();
+    zoom(Math.min(maxZoom, zoomLevel + zoomStep), rect.left + rect.width / 2, rect.top + rect.height / 2);
   }
 
   function zoomOut() {
-    zoom( Math.max(minZoom, zoomLevel - zoomStep), container.clientWidth / 2 + container.getBoundingClientRect().left, container.getBoundingClientRect().top + container.clientHeight / 2);
+    const rect = container.getBoundingClientRect();
+    zoom(Math.max(minZoom, zoomLevel - zoomStep), rect.left + rect.width / 2, rect.top + rect.height / 2);
   }
-
-  // Mouse wheel zoom on video container — zoom toward mouse position
-  container.addEventListener('wheel', e => {
-    e.preventDefault();
-    const delta = e.deltaY < 0 ? zoomStep : -zoomStep;
-    zoom(clamp(zoomLevel + delta, minZoom, maxZoom), e.clientX, e.clientY);
-  }, { passive: false });
 
   zoomInBtn.addEventListener('click', zoomIn);
   zoomOutBtn.addEventListener('click', zoomOut);
 
   // Mouse drag panning
   container.addEventListener('mousedown', e => {
-    if (zoomLevel <= 1) return; // no pan if not zoomed in
+    if (zoomLevel <= 1) return; // no panning if not zoomed in
     isDragging = true;
     dragStartX = e.clientX;
     dragStartY = e.clientY;
@@ -345,7 +344,7 @@
     e.preventDefault();
   });
 
-  // Screenshot function with flash overlay on video only
+  // Screenshot function with flash effect
   function doFlash() {
     flash.classList.add('active');
     setTimeout(() => flash.classList.remove('active'), 200);
@@ -353,7 +352,7 @@
   function formatDate(date) {
     const pad = n => n.toString().padStart(2,'0');
     return date.getFullYear() +
-           pad(date.getMonth() +1) +
+           pad(date.getMonth() + 1) +
            pad(date.getDate()) + '_' +
            pad(date.getHours()) +
            pad(date.getMinutes()) +
@@ -383,8 +382,13 @@
   let recorder;
   let recording = false;
   let chunks = [];
+
   function toggleRecording() {
     if (!recording) {
+      if (!video.captureStream) {
+        alert('Recording not supported in this browser.');
+        return;
+      }
       const stream = video.captureStream();
       recorder = new MediaRecorder(stream);
       recorder.ondataavailable = e => chunks.push(e.data);
@@ -406,11 +410,10 @@
 
   // Timestamp toggle and update
   let showTimestamp = false;
-  function toggleTimestamp() {
+  timestampBtn.addEventListener('click', () => {
     showTimestamp = !showTimestamp;
     timestamp.style.display = showTimestamp ? 'block' : 'none';
-  }
-  timestampBtn.addEventListener('click', toggleTimestamp);
+  });
 
   setInterval(() => {
     if (showTimestamp) {
@@ -418,6 +421,7 @@
       timestamp.textContent = now.toLocaleTimeString();
     }
   }, 1000);
+
 </script>
 
 </body>
