@@ -108,24 +108,35 @@
             main h2 {
                 font-size: 1.8em;
             }
+            
             .popup {
-                  position: fixed; top: 0; left: 0;
-                  width: 100vw; height: 100vh;
-                  background: rgba(0,0,0,0.85);
-                  display: flex; align-items: center; justify-content: center;
-                  z-index: 9999;
+                position: fixed;
+                top: 0; left: 0;
+                width: 100vw; height: 100vh;
+                background: rgba(0,0,0,0.8);
+                display: flex; align-items: center; justify-content: center;
+                z-index: 9999;
             }
             .popup-content {
-                  background: #222; color: white;
-                  padding: 40px; border-radius: 12px;
-                  font-size: 1.8rem; text-align: center;
-                  max-width: 90%; max-height: 90%; overflow-y: auto;
-            }
+                background: #222;
+                color: white;
+                padding: 30px;
+                border-radius: 12px;
+                max-width: 90%;
+                max-height: 80%;
+                overflow-y: auto;
+                box-shadow: 0 0 20px #000;
+                text-align: center;
+           }
             .popup-content button {
-                  font-size: 1.6rem; padding: 15px 30px;
-                  background: #87CEFA; border: none;
-                  border-radius: 8px; cursor: pointer;
+                font-size: 1.2rem;
+                padding: 10px 25px;
+                background: #87CEFA;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
             }
+
     </style>
 </head>
 <body>
@@ -152,25 +163,40 @@
 <!-- Begin notification section -->
 <div id="warning-popup" class="popup" style="display: none;">
   <div class="popup-content">
-    <div id="warning-text">Loading...</div>
-    <br>
-    <button onclick="document.getElementById('warning-popup').style.display='none'">Close</button>
+    <h2>Important Update</h2>
+    <div id="warning-text" style="margin-bottom: 20px; text-align: left;">Loading...</div>
+    
+    <label style="display: block; margin-bottom: 20px; font-size: 1rem;">
+      <input type="checkbox" id="suppress-warning"> Don't show me updates
+    </label>
+
+    <button onclick="closeWarning()">Close</button>
   </div>
 </div>
 
 <script>
-  fetch('warning.txt')
-    .then(response => {
-      if (!response.ok) throw new Error('Failed to load warning.txt');
-      return response.text();
-    })
-    .then(text => {
-      document.getElementById('warning-text').textContent = text;
-      document.getElementById('warning-popup').style.display = 'flex';
-    })
-    .catch(error => {
-      console.error('Warning popup error:', error);
-    });
+  function closeWarning() {
+    const suppress = document.getElementById('suppress-warning').checked;
+    if (suppress) {
+      localStorage.setItem('suppressWarning', 'true');
+    }
+    document.getElementById('warning-popup').style.display = 'none';
+  }
+
+  if (!localStorage.getItem('suppressWarning')) {
+    fetch('warning.txt')
+      .then(response => {
+        if (!response.ok) throw new Error('Failed to load warning.txt');
+        return response.text();
+      })
+      .then(text => {
+        document.getElementById('warning-text').textContent = text;
+        document.getElementById('warning-popup').style.display = 'flex';
+      })
+      .catch(err => {
+        console.error('Failed to load warning:', err);
+      });
+  }
 </script>
 <!-- End notification section -->
 
