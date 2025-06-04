@@ -175,15 +175,17 @@
 </div>
 
 <script>
+  const FORCE_SHOW_WARNING = true; // Override warning memory function
+
   function closeWarning() {
     const suppress = document.getElementById('suppress-warning').checked;
-    if (suppress) {
+    if (suppress && !FORCE_SHOW_WARNING) {
       localStorage.setItem('suppressWarning', 'true');
     }
     document.getElementById('warning-popup').style.display = 'none';
   }
 
-  if (!localStorage.getItem('suppressWarning')) {
+  if (FORCE_SHOW_WARNING || !localStorage.getItem('suppressWarning')) {
     fetch('warning.txt')
       .then(response => {
         if (!response.ok) throw new Error('Failed to load warning.txt');
