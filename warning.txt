@@ -1,4 +1,0 @@
-New updates:
-
-This website is currently under production and continually receives updates.
-View the changelog.txt file at https://github.com/sddavy/GHMF to see the latest changes, important updates, and more!
