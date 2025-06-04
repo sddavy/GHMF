@@ -239,7 +239,7 @@
   const showPopup = FORCE_SHOW_WARNING || !localStorage.getItem('suppressWarning');
 
   if (showPopup) {
-    const fileToLoad = isFirstVisit ? 'welcome.txt' : 'warning.txt';
+    const fileToLoad = isFirstVisit ? 'content/welcome.txt' : 'content/warning.txt';
 
     fetch(fileToLoad)
       .then(response => {
