@@ -81,30 +81,45 @@
         }
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             margin-top: 20px;
+            background: #2f2f2f;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
         }
+        
         th, td {
-            border: 1px solid white;
-            padding: 10px;
+            padding: 14px 18px;
             text-align: left;
         }
+        
         th {
-            background: #444;
+            background-color: #3a3a3a;
+            color: #ffffff;
+            font-weight: bold;
         }
-        button {
-            padding: 8px 12px;
-            border: none;
-            cursor: pointer;
-            color: white;
-            font-size: 1.0em;
+        
+        tr:not(:last-child) td {
+            border-bottom: 1px solid #555;
         }
-        .view-button {
-            background: #87CEFA;
+        
+        tr:hover td {
+            background-color: #3f3f3f;
+            transition: background-color 0.2s ease;
         }
+        .view-button,
         .download-button {
-            background: #000;
-            color: white;
+            border-radius: 6px;
+            padding: 8px 14px;
+            transition: background 0.2s ease, transform 0.1s ease;
+        }
+        
+        .view-button:hover,
+        .download-button:hover {
+            background-color: #6db8e4;
+            transform: scale(1.05);
         }
         @media (max-width: 600px) {
             header img {
