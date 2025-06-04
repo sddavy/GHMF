@@ -183,11 +183,10 @@
         <p>This website offers tools and resources to simplify the process of choreographing shows for the Grand Haven Musical Fountain. Site is still in development, so expect changes.</p>
     </main>
 
-
 <!-- Begin notification section -->
 <div id="warning-popup" class="popup" style="display: none;">
   <div class="popup-content">
-    <h2>Important Update</h2>
+    <h2 id="warning-title">Important Update</h2>
     <div id="warning-text" style="margin-bottom: 20px; text-align: left;">Loading...</div>
     
     <label style="display: block; margin-bottom: 20px; font-size: 1rem;">
@@ -199,7 +198,8 @@
 </div>
 
 <script>
-  const FORCE_SHOW_WARNING = true; // Override warning memory function
+  const FORCE_SHOW_WARNING = true; // Override memory check
+  const ORIGINAL_TITLE = document.title;
 
   function closeWarning() {
     const suppress = document.getElementById('suppress-warning').checked;
@@ -207,6 +207,7 @@
       localStorage.setItem('suppressWarning', 'true');
     }
     document.getElementById('warning-popup').style.display = 'none';
+    document.title = ORIGINAL_TITLE;
   }
 
   if (FORCE_SHOW_WARNING || !localStorage.getItem('suppressWarning')) {
@@ -216,7 +217,16 @@
         return response.text();
       })
       .then(text => {
-        document.getElementById('warning-text').textContent = text;
+        // Split into lines
+        const lines = text.split(/\r?\n/);
+        const popupTitle = lines.shift() || "Warning";
+        const popupMessage = lines.join('\n').trim();
+
+        // Set title in popup and page
+        document.getElementById('warning-title').textContent = popupTitle;
+        document.getElementById('warning-text').textContent = popupMessage;
+        document.title = popupTitle;
+
         document.getElementById('warning-popup').style.display = 'flex';
       })
       .catch(err => {
@@ -225,7 +235,6 @@
   }
 </script>
 <!-- End notification section -->
-
 
 </body>
 </html>
