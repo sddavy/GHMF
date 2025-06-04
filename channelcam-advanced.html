@@ -3,11 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Advanced Channel Cam Viewer - Custom Controls</title>
+<title>Advanced Channel Cam Viewer</title>
 <link rel="icon" href="assets/logo.png" type="image/png" />
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@panzoom/panzoom@9.4.0/dist/panzoom.min.js"></script>
 <style>
   html, body {
     margin: 0; padding: 0; height: 100%; background-color: #000; color: white; font-family: sans-serif;
@@ -19,22 +18,33 @@
   .video-container {
     position: relative;
     width: 100%;
-    max-width: 1200px;
+    max-width: 1400px;
     background: #000;
     user-select: none;
+    overflow: hidden;
+    border-radius: 6px;
+    cursor: grab;
+  }
+  .video-container:active {
+    cursor: grabbing;
   }
   video {
     width: 100%;
-    height: 675px; /* 16:9 ratio for 1200px wide */
+    height: 787.5px; /* 16:9 ratio for 1400px wide */
     display: block;
     background: #000;
     object-fit: contain;
+    transition: transform 0.2s ease;
+    transform-origin: 0 0; /* top-left origin to allow panning based on transform translate */
     border-radius: 6px;
-  }
+    will-change: transform;
+    user-select: none;
+    pointer-events: all;
   #timestamp {
     position: absolute;
-    top: 10px;
-    left: 10px;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
     background: rgba(0,0,0,0.5);
     padding: 5px 10px;
     font-size: 1rem;
@@ -43,9 +53,10 @@
     pointer-events: none;
     user-select: none;
     z-index: 10;
+    white-space: nowrap;
   }
   .controls-container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 15px 0 40px;
     background: #111;
     border-radius: 8px;
@@ -61,8 +72,8 @@
     border: none;
     border-radius: 5px;
     color: white;
-    padding: 10px 16px;
-    font-size: 1.1rem;
+    padding: 10px 18px;
+    font-size: 1rem;
     cursor: pointer;
     transition: background-color 0.2s ease;
   }
@@ -70,43 +81,22 @@
     background: #444;
   }
   .custom-controls {
-    flex: 1 1 400px;
+    flex: 1 1 100%;
     display: flex;
     align-items: center;
     gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
   }
-  .custom-controls button {
-    background: transparent;
-    border: none;
-    color: white;
-    font-size: 22px;
-  }
-  .custom-controls button:hover {
-    color: #87CEFA;
-  }
-  .progress-container {
-    flex-grow: 1;
-    height: 10px;
-    background: #444;
-    border-radius: 5px;
-    cursor: pointer;
-    position: relative;
-  }
-  .progress-filled {
-    height: 100%;
-    background: #87CEFA;
-    width: 0%;
-    border-radius: 5px;
-    transition: width 0.1s linear;
-  }
-  /* Screen flash animation */
+  /* Screen flash overlay only on video */
   #flash {
     pointer-events: none;
-    position: fixed;
+    position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
     background: white;
     opacity: 0;
-    z-index: 9999;
+    z-index: 100;
+    border-radius: 6px;
     transition: opacity 0.25s ease-out;
   }
   #flash.active {
@@ -120,36 +110,39 @@
 <div class="video-container" id="videoContainer">
   <video id="video" muted autoplay playsinline></video>
   <div id="timestamp"></div>
+  <div id="flash"></div>
 </div>
 
 <div class="controls-container" id="controlsContainer">
 
   <!-- Playback Controls -->
   <div class="custom-controls" id="playbackControls">
-    <button id="playPauseBtn" title="Play/Pause">►</button>
-    <button id="muteBtn" title="Mute/Unmute">🔈</button>
-    <div class="progress-container" id="progressContainer" title="Seek">
-      <div class="progress-filled" id="progressFilled"></div>
-    </div>
-    <button id="pipBtn" title="Picture in Picture">🗔</button>
-    <button id="fullscreenBtn" title="Fullscreen">⛶</button>
+    <button id="playPauseBtn" title="Play/Pause">Play</button>
+    <button id="muteBtn" title="Mute/Unmute">Mute</button>
+    <button id="back5Btn" title="Back 5 Seconds">Back 5s</button>
+    <button id="back60Btn" title="Back 1 Minute">Back 1m</button>
+    <button id="pipBtn" title="Picture in Picture">PiP</button>
+    <button id="fullscreenBtn" title="Fullscreen">Fullscreen</button>
   </div>
 
   <!-- Other Controls -->
-  <button id="zoomInBtn" title="Zoom In">＋ Zoom In</button>
-  <button id="zoomOutBtn" title="Zoom Out">− Zoom Out</button>
-  <button id="screenshotBtn" title="Take Screenshot">📸 Screenshot</button>
-  <button id="recordBtn" title="Start Recording">⏺️ Start Recording</button>
-  <button id="timestampBtn" title="Toggle Timestamp">⏰ Toggle Timestamp</button>
+  <div class="custom-controls" id="otherControls">
+    <button id="zoomInBtn" title="Zoom In">Zoom In</button>
+    <button id="zoomOutBtn" title="Zoom Out">Zoom Out</button>
+    <button id="screenshotBtn" title="Take Screenshot">Screenshot</button>
+    <button id="recordBtn" title="Start Recording">Start Recording</button>
+    <button id="timestampBtn" title="Toggle Timestamp">Toggle Timestamp</button>
+  </div>
 </div>
 
-<!-- Screen flash element -->
-<div id="flash"></div>
+<script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
 <script>
   const video = document.getElementById('video');
   const timestamp = document.getElementById('timestamp');
   const container = document.getElementById('videoContainer');
+  const flash = document.getElementById('flash');
 
   const streamUrl = 'https://s78.ipcamlive.com/streams/4eyaqdwio6nlevp1t/stream.m3u8';
 
@@ -167,8 +160,8 @@
   // Playback Controls Elements
   const playPauseBtn = document.getElementById('playPauseBtn');
   const muteBtn = document.getElementById('muteBtn');
-  const progressContainer = document.getElementById('progressContainer');
-  const progressFilled = document.getElementById('progressFilled');
+  const back5Btn = document.getElementById('back5Btn');
+  const back60Btn = document.getElementById('back60Btn');
   const pipBtn = document.getElementById('pipBtn');
   const fullscreenBtn = document.getElementById('fullscreenBtn');
 
@@ -183,35 +176,29 @@
   function togglePlayPause() {
     if (video.paused) {
       video.play();
+      playPauseBtn.textContent = 'Pause';
     } else {
       video.pause();
+      playPauseBtn.textContent = 'Play';
     }
   }
   playPauseBtn.addEventListener('click', togglePlayPause);
-  video.addEventListener('play', () => playPauseBtn.textContent = '❚❚');
-  video.addEventListener('pause', () => playPauseBtn.textContent = '►');
 
   // Mute/unmute toggle
   function toggleMute() {
     video.muted = !video.muted;
-    muteBtn.textContent = video.muted ? '🔇' : '🔈';
+    muteBtn.textContent = video.muted ? 'Unmute' : 'Mute';
   }
   muteBtn.addEventListener('click', toggleMute);
 
-  // Progress Bar Update
-  video.addEventListener('timeupdate', () => {
-    if (video.duration) {
-      const percent = (video.currentTime / video.duration) * 100;
-      progressFilled.style.width = percent + '%';
-    }
+  // Back 5 seconds
+  back5Btn.addEventListener('click', () => {
+    video.currentTime = Math.max(0, video.currentTime - 5);
   });
 
-  // Seeking through progress bar
-  progressContainer.addEventListener('click', e => {
-    const rect = progressContainer.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    const newTime = (clickX / rect.width) * video.duration;
-    video.currentTime = newTime;
+  // Back 1 minute
+  back60Btn.addEventListener('click', () => {
+    video.currentTime = Math.max(0, video.currentTime - 60);
   });
 
   // Picture in Picture toggle
@@ -238,27 +225,132 @@
     }
   });
 
-  // Panzoom setup for zoom buttons and mouse wheel zoom anywhere on container
-  let panZoom;
-  window.addEventListener('load', () => {
-    panZoom = Panzoom(video, { maxScale: 5, minScale: 1, contain: 'outside' });
-    container.addEventListener('wheel', e => {
-      e.preventDefault();
-      panZoom.zoomWithWheel(e);
-    }, { passive: false });
+  // Zoom and pan setup
+  let zoomLevel = 1;
+  const zoomStep = 0.2;
+  const maxZoom = 5;
+  const minZoom = 1;
+
+  // Track current pan offsets (in pixels)
+  let offsetX = 0;
+  let offsetY = 0;
+
+  // Track dragging state
+  let isDragging = false;
+  let dragStartX = 0;
+  let dragStartY = 0;
+  let initialOffsetX = 0;
+  let initialOffsetY = 0;
+
+  function clamp(value, min, max) {
+    return Math.min(max, Math.max(min, value));
+  }
+
+  function updateTransform() {
+    // Limit panning so video can't be dragged beyond edges
+    // Calculate max pan offset based on zoom and container/video size
+    const videoRect = video.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+
+    const scaledWidth = video.videoWidth * zoomLevel;
+    const scaledHeight = video.videoHeight * zoomLevel;
+
+    // Calculate max translateX and Y to prevent blank space:
+    // The video can move between max 0 (left/top edge aligned)
+    // and min negative offset equal to scaledWidth - container width
+    const maxOffsetX = 0;
+    const maxOffsetY = 0;
+
+    const minOffsetX = Math.min(containerRect.width - scaledWidth, 0);
+    const minOffsetY = Math.min(containerRect.height - scaledHeight, 0);
+
+    offsetX = clamp(offsetX, minOffsetX, maxOffsetX);
+    offsetY = clamp(offsetY, minOffsetY, maxOffsetY);
+
+    video.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${zoomLevel})`;
+  }
+
+  // Zoom function that zooms toward mouse pointer position
+  function zoom(newZoom, centerX, centerY) {
+    if (newZoom < minZoom || newZoom > maxZoom) return;
+  
+    // Get bounding rect of video to calculate offset relative to video
+    const rect = video.getBoundingClientRect();
+  
+    // Mouse position relative to video top-left
+    const dx = centerX - rect.left;
+    const dy = centerY - rect.top;
+  
+    // Scale change factor
+    const scaleChange = newZoom / zoomLevel;
+  
+    // Adjust offsetX and offsetY to keep the point under mouse stable
+    offsetX = (offsetX - dx) * scaleChange + dx;
+    offsetY = (offsetY - dy) * scaleChange + dy;
+  
+    zoomLevel = newZoom;
+    updateTransform();
+  }
+
+  // Mouse wheel zoom on video container, zoom toward mouse position
+  container.addEventListener('wheel', e => {
+    e.preventDefault();
+    const delta = e.deltaY < 0 ? zoomStep : -zoomStep;
+    zoom(clamp(zoomLevel + delta, minZoom, maxZoom), e.clientX, e.clientY);
+  }, { passive: false });
+
+  function zoomIn() {
+    zoom( Math.min(maxZoom, zoomLevel + zoomStep), container.clientWidth / 2 + container.getBoundingClientRect().left, container.getBoundingClientRect().top + container.clientHeight / 2);
+  }
+
+  function zoomOut() {
+    zoom( Math.max(minZoom, zoomLevel - zoomStep), container.clientWidth / 2 + container.getBoundingClientRect().left, container.getBoundingClientRect().top + container.clientHeight / 2);
+  }
+
+  // Mouse wheel zoom on video container — zoom toward mouse position
+  container.addEventListener('wheel', e => {
+    e.preventDefault();
+    const delta = e.deltaY < 0 ? zoomStep : -zoomStep;
+    zoom(clamp(zoomLevel + delta, minZoom, maxZoom), e.clientX, e.clientY);
+  }, { passive: false });
+
+  zoomInBtn.addEventListener('click', zoomIn);
+  zoomOutBtn.addEventListener('click', zoomOut);
+
+  // Mouse drag panning
+  container.addEventListener('mousedown', e => {
+    if (zoomLevel <= 1) return; // no pan if not zoomed in
+    isDragging = true;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    initialOffsetX = offsetX;
+    initialOffsetY = offsetY;
+    e.preventDefault();
   });
 
-  zoomInBtn.addEventListener('click', () => panZoom.zoomIn());
-  zoomOutBtn.addEventListener('click', () => panZoom.zoomOut());
+  window.addEventListener('mouseup', e => {
+    if (isDragging) {
+      isDragging = false;
+      e.preventDefault();
+    }
+  });
 
-  // Screenshot function with flash and concise filename
-  const flash = document.getElementById('flash');
+  window.addEventListener('mousemove', e => {
+    if (!isDragging) return;
+    const dx = e.clientX - dragStartX;
+    const dy = e.clientY - dragStartY;
+    offsetX = initialOffsetX + dx;
+    offsetY = initialOffsetY + dy;
+    updateTransform();
+    e.preventDefault();
+  });
+
+  // Screenshot function with flash overlay on video only
   function doFlash() {
     flash.classList.add('active');
     setTimeout(() => flash.classList.remove('active'), 200);
   }
   function formatDate(date) {
-    // Format YYYYMMDD_HHMMSS
     const pad = n => n.toString().padStart(2,'0');
     return date.getFullYear() +
            pad(date.getMonth() +1) +
@@ -303,11 +395,11 @@
       };
       recorder.start();
       recording = true;
-      recordBtn.textContent = '⏹️ Stop Recording';
+      recordBtn.textContent = 'Stop Recording';
     } else {
       recorder.stop();
       recording = false;
-      recordBtn.textContent = '⏺️ Start Recording';
+      recordBtn.textContent = 'Start Recording';
     }
   }
   recordBtn.addEventListener('click', toggleRecording);
