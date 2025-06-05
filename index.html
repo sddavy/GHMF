@@ -95,7 +95,7 @@
         .popup-content {
             background: #222; color: white;
             padding: 40px; border-radius: 12px;
-            font-size: 1.2rem; text-align: left;
+            font-size: 1.2rem; text-align: center;
             max-width: 90%; max-height: 80%; overflow-y: auto;
         }
         .popup-content button {
@@ -171,6 +171,10 @@
           color: #6495ED;
           cursor: pointer;
         }
+        #warning-text {
+          margin-bottom: 20px;
+          text-align: left;
+        }
         /* End notification styles */
         
     </style>
@@ -205,7 +209,7 @@
 <div id="warning-popup" class="popup" style="display: none;">
   <div class="popup-content">
     <h2 id="warning-title">Loading...</h2>
-    <div id="warning-text" style="margin-bottom: 20px; text-align: center;"></div>
+    <div id="warning-text"></div>
     
     <label style="display: block; margin-bottom: 20px; font-size: 1rem;">
       <input type="checkbox" id="suppress-warning"> Don't show me updates
