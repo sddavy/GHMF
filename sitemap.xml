@@ -1,9 +1,10 @@
-<urlset>
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://ghmfhelper.pages.dev/</loc></url>
   <url><loc>https://ghmfhelper.pages.dev/about.html</loc></url>
   <url><loc>https://ghmfhelper.pages.dev/lighting.html</loc></url>
   <url><loc>https://ghmfhelper.pages.dev/documentation.html</loc></url>
   <url><loc>https://ghmfhelper.pages.dev/channelcam.html</loc></url>
   <url><loc>https://ghmfhelper.pages.dev/channelcam-simple.html</loc></url>
-  <url><loc>https://ghmfhelper.pages.dev/channelcam.advanced</loc></url>
+  <url><loc>https://ghmfhelper.pages.dev/channelcam.advanced.html</loc></url>
 </urlset>
