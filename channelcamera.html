@@ -6,46 +6,36 @@
   <title>GHMF Helper Channel Cam Moved</title>
   <link rel="icon" href="assets/logo.png" type="image/png">
   <style>
+    * {
+      box-sizing: border-box;
+    }
     html, body {
       margin: 0;
-      height: 100%;
-      overflow: hidden;
+      padding: 20px;
+      min-height: 100vh;
       background-color: #333;
       color: white;
       font-family: sans-serif;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 20px;
     }
+
     h1 {
       font-weight: normal;
       font-size: 1.6rem;
-      margin-bottom: 1.5rem;
-      max-width: 600px;
-      line-height: 1.4;
+      margin: 1rem 0 1.5rem;
+      max-width: 90vw;
+      line-height: 1.5;
     }
+
     a {
       color: #87CEFA;
       text-decoration: underline;
+      word-break: break-word;
     }
-    button {
-      background-color: #98FB98;
-      color: black;
-      padding: 12px 24px;
-      font-size: 1.2rem;
-      cursor: pointer;
-      border: none;
-      box-shadow: none;
-      border-radius: 8px;
-      margin: 10px;
-    }
-    button:hover {
-      background-color: #87CEFA;
-      color: black;
-    }
+
     .button-row {
       display: flex;
       gap: 20px;
@@ -53,24 +43,59 @@
       justify-content: center;
       margin-top: 20px;
     }
+
+    button {
+      background-color: #98FB98;
+      color: black;
+      padding: 12px 24px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      border: none;
+      box-shadow: none;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #87CEFA;
+      color: black;
+    }
+
     .logo {
-    max-width: 200px;
-    width: 100%;
-    height: auto;
-    margin-bottom: 20px;
+      max-width: 220px;
+      width: 100%;
+      height: auto;
+      margin-bottom: 20px;
+      transition: transform 0.2s;
+    }
+
+    .logo:hover {
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 1.2rem;
+      }
+      button {
+        font-size: 1rem;
+        padding: 10px 20px;
+      }
     }
   </style>
 </head>
 <body>
 
-  <img src="assets/logo.png" alt="Logo" class="logo">
+  <a href="index.html">
+    <img src="assets/logo.png" alt="Logo" class="logo">
+  </a>
+
   <h1>
     The GHMF Helper Channel Cam has moved from <br>
-    
-    <a href="https://ghmfhelper.pages.dev/channelcamera/" target="_self" rel="noopener noreferrer">
+    <a href="https://ghmfhelper.pages.dev/channelcamera/" target="_self">
       https://ghmfhelper.pages.dev/channelcamera/
     </a> <br> to <br>
-    <a href="https://ghmfhelper.pages.dev/channelcam-simple/" target="_self" rel="noopener noreferrer">
+    <a href="https://ghmfhelper.pages.dev/channelcam-simple/" target="_self">
       https://ghmfhelper.pages.dev/channelcam-simple/
     </a>
   </h1>
