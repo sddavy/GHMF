@@ -28,21 +28,31 @@
       max-width: 600px;
       line-height: 1.4;
     }
+    a {
+      color: #87CEFA;
+      text-decoration: underline;
+    }
     button {
       background-color: #98FB98;
-      color: white;
+      color: black;
       padding: 12px 24px;
       font-size: 1.2rem;
       cursor: pointer;
-      border-radius: 4px;
-      transition: background-color 0.2s, color 0.2s;
-      user-select: none;
+      border-radius: 8px;
+      margin: 10px;
     }
-    button:hover, button:focus {
+    button:hover {
       background-color: #87CEFA;
       color: black;
       outline: none;
     }
+    .button-row {
+    display: flex;
+    gap: 20px; /* space between buttons */
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+  }
   </style>
 </head>
 <body>
@@ -50,21 +60,23 @@
   <h1>
     The GHMF Helper Channel Cam has moved from <br>
     
-    <a href="https://ghmfhelper.pages.dev/channelcamera/" style="color:#888; text-decoration: underline;" target="_blank" rel="noopener noreferrer">
+    <a href="https://ghmfhelper.pages.dev/channelcamera/" target="_self" rel="noopener noreferrer">
       https://ghmfhelper.pages.dev/channelcamera/
     </a> <br> to <br>
-    <a href="https://ghmfhelper.pages.dev/channelcam-simple/" style="color:#888; text-decoration: underline;" target="_blank" rel="noopener noreferrer">
+    <a href="https://ghmfhelper.pages.dev/channelcam-simple/" target="_self" rel="noopener noreferrer">
       https://ghmfhelper.pages.dev/channelcam-simple/
     </a>
   </h1>
 
-  <button onclick="window.location.href='https://ghmfhelper.pages.dev/channelcam-simple/'">
-    Take me to the new site
-  </button>
+  <div class="button-row">
+    <button onclick="window.location.href='https://ghmfhelper.pages.dev/channelcam-simple/'">
+      Take me to the new site
+    </button>
 
-  <button onclick="window.location.href='https://ghmfhelper.pages.dev/'">
-    Take me to home
-  </button>
+    <button onclick="window.location.href='https://ghmfhelper.pages.dev/'">
+      Take me to home
+    </button>
+  </div>
 
 </body>
 </html>
