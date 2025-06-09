@@ -15,7 +15,6 @@
 
     <title>Grand Haven Musical Fountain Choreographers Helper</title>
     <link rel="icon" href="assets/logo.png" type="image/png">
-    <link id="themeStylesheet" rel="stylesheet" href="themes/dark-theme.css">
     
     <style>
         body {
@@ -23,13 +22,13 @@
             margin: 0;
             padding: 0;
             text-align: left;
-            background: var(--bg-color);
-            color: var(--text-color);
+            background: #606060;
+            color: white;
             font-size: 1.0em;
         }
         header {
-            background: var(--h-bg);
-            color: var(--text-color);
+            background: #000;
+            color: white;
             padding: 20px;
             display: flex;
             align-items: center;
@@ -48,14 +47,14 @@
             min-width: 200px;
         }
         nav {
-            background: var(--tab-bar);
+            background: #333;
             padding: 10px 0;
             display: flex;
             flex-wrap: wrap;
-            justify-content: flex-start;    
+            justify-content: flex-start;
         }
         nav a {
-            color: var(--alt-text-color);
+            color: black;
             text-decoration: none;
             padding: 14px 20px;
             display: inline-block;
@@ -105,7 +104,7 @@
             color: black;
         }
         .popup-content {
-            background: var(--h-bg); color: var(--text-color);
+            background: #222; color: white;
             padding: 40px; border-radius: 12px;
             font-size: 1.2rem; text-align: center;
             max-width: 90%; max-height: 80%; overflow-y: auto;
@@ -154,8 +153,8 @@
                 z-index: 9999;
             }
             .popup-content {
-                background: var(--h-bg);
-                color: var(--text-color);
+                background: #222;
+                color: white;
                 padding: 30px;
                 border-radius: 12px;
                 max-width: 90%;
@@ -192,26 +191,7 @@
     </style>
 </head>
 <body>
-    <!-- Begin theme -->    
-    <script>
-      window.addEventListener('DOMContentLoaded', () => {
-        const themeLink = document.getElementById('themeStylesheet');
-        const themeToggleBtn = document.getElementById('themeToggleBtn');
-    
-        let currentTheme = localStorage.getItem('theme') || 'dark';
-        themeLink.href = 'themes/' + currentTheme + '-theme.css';
-        themeToggleBtn.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
-    
-        themeToggleBtn.addEventListener('click', () => {
-          currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-          themeLink.href = 'themes/' + currentTheme + '-theme.css';
-          localStorage.setItem('theme', currentTheme);
-          themeToggleBtn.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
-        });
-      });
-    </script>
-        <!-- End theme --> 
-    
+
     <!-- Begin header -->
     <header>
         <img src="assets/logo.png" alt="Logo">
@@ -226,7 +206,6 @@
         <a href="lighting.html">Lighting Map</a>
         <a href="documentation.html">Documentation</a>
         <a href="channelcam.html">Channel Cam</a>
-        <button id="themeToggleBtn" onclick="toggleTheme()">☀️</button>
     </nav>
     <!-- End tabs -->
     
