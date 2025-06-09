@@ -191,28 +191,26 @@
         
     </style>
 </head>
-    
-<!-- Begin theme -->    
-<script>
-  window.addEventListener('DOMContentLoaded', () => {
-    const themeLink = document.getElementById('themeStylesheet');
-    const themeToggleBtn = document.getElementById('themeToggleBtn');
-
-    let currentTheme = localStorage.getItem('theme') || 'dark';
-    themeLink.href = 'themes/' + currentTheme + '-theme.css';
-    themeToggleBtn.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
-
-    themeToggleBtn.addEventListener('click', () => {
-      currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      themeLink.href = 'themes/' + currentTheme + '-theme.css';
-      localStorage.setItem('theme', currentTheme);
-      themeToggleBtn.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
-    });
-  });
-</script>
-    <!-- End theme --> 
-
 <body>
+    <!-- Begin theme -->    
+    <script>
+      window.addEventListener('DOMContentLoaded', () => {
+        const themeLink = document.getElementById('themeStylesheet');
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+    
+        let currentTheme = localStorage.getItem('theme') || 'dark';
+        themeLink.href = 'themes/' + currentTheme + '-theme.css';
+        themeToggleBtn.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+    
+        themeToggleBtn.addEventListener('click', () => {
+          currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+          themeLink.href = 'themes/' + currentTheme + '-theme.css';
+          localStorage.setItem('theme', currentTheme);
+          themeToggleBtn.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+        });
+      });
+    </script>
+        <!-- End theme --> 
     
     <!-- Begin header -->
     <header>
