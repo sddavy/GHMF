@@ -76,30 +76,56 @@
 
 
   <script>
-  const video = document.getElementById('video');
+    const video = document.getElementById('video');
+  
+    fetch('stream-url.txt')
+      .then(response => {
+        if (!response.ok) throw new Error('Failed to load URL file');
+        return response.text();
+      })
+      .then(urlText => {
+        const streamUrl = urlText.trim();
+  
+        if (Hls.isSupported()) {
+          const hls = new Hls({
+            liveSyncDuration: 3,       // seconds behind live edge to keep playback
+            liveMaxLatencyDuration: 10 // max latency before trying to catch up
+          });
+  
+          hls.loadSource(streamUrl);
+          hls.attachMedia(video);
+  
+          // Play when manifest is parsed
+          hls.on(Hls.Events.MANIFEST_PARSED, () => {
+            video.play();
+          });
+  
+          // Periodically check if playback is lagging behind live edge
+          hls.on(Hls.Events.LEVEL_LOADED, () => {
+            if (!video.paused && !video.seeking) {
+              const livePos = hls.liveSyncPosition; // current live edge time
+              const lag = livePos - video.currentTime;
+  
+              // If more than 5 seconds behind, jump forward to live edge
+              if (lag > 5) {
+                video.currentTime = livePos;
+              }
+            }
+          });
+  
+        } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+          video.src = streamUrl;
+          video.play();
+        } else {
+          video.outerHTML = '<p style="color: white; text-align: center;">Your browser does not support HLS playback. Please use a supported browser.</p>';
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        video.outerHTML = '<p style="color: white; text-align: center;">Failed to load stream URL.</p>';
+      });
+  </script>
 
-  fetch('stream-url.txt')
-    .then(response => {
-      if (!response.ok) throw new Error('Failed to load URL file');
-      return response.text();
-    })
-    .then(urlText => {
-      const streamUrl = urlText.trim();
-      if (Hls.isSupported()) {
-        const hls = new Hls();
-        hls.loadSource(streamUrl);
-        hls.attachMedia(video);
-      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-        video.src = streamUrl;
-      } else {
-        video.outerHTML = '<p style="color: white; text-align: center;">Your browser does not support HLS playback. Please use a supported browser.</p>';
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      video.outerHTML = '<p style="color: white; text-align: center;">Failed to load stream URL.</p>';
-    });
-</script>
 
 </body>
 </html>
