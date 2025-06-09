@@ -191,28 +191,29 @@
         
     </style>
 </head>
+    
 <!-- Begin theme -->    
 <script>
-      const themeLink = document.getElementById('themeStylesheet');
-    
-      // Load saved theme from localStorage
-      const savedTheme = localStorage.getItem('theme') || 'dark';
-      themeLink.href = savedTheme + '-theme.css';
-    
-      function toggleTheme() {
-        const newTheme = themeLink.href.includes('dark') ? 'light' : 'dark';
-        themeLink.href = newTheme + '-theme.css';
-        localStorage.setItem('theme', newTheme);
-        themeToggleBtn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
-      }
-    
-      window.addEventListener('DOMContentLoaded', () => {
-        themeToggleBtn.textContent = themeLink.href.includes('dark') ? '☀️' : '🌙';
-      });
-    </script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const themeLink = document.getElementById('themeStylesheet');
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+
+    let currentTheme = localStorage.getItem('theme') || 'dark';
+    themeLink.href = 'themes/' + currentTheme + '-theme.css';
+    themeToggleBtn.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+
+    themeToggleBtn.addEventListener('click', () => {
+      currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      themeLink.href = 'themes/' + currentTheme + '-theme.css';
+      localStorage.setItem('theme', currentTheme);
+      themeToggleBtn.textContent = currentTheme === 'dark' ? '☀️' : '🌙';
+    });
+  });
+</script>
     <!-- End theme --> 
 
 <body>
+    
     <!-- Begin header -->
     <header>
         <img src="assets/logo.png" alt="Logo">
