@@ -278,10 +278,10 @@
 </div>
 
 <script>
-  function showNotification(message) {
+  function showNotification(htmlContent) {
     const notification = document.getElementById('notification');
     const messageSpan = document.getElementById('notification-message');
-    messageSpan.textContent = message;
+    messageSpan.innerHTML = htmlContent;
     notification.classList.add('show');
   }
 
@@ -290,21 +290,26 @@
     notification.classList.remove('show');
   }
 
+  function linkify(text) {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return text.replace(urlRegex, url => {
+      return `<a href="${url}" target="_blank" style="color:#87CEFA; text-decoration:underline;">${url}</a>`;
+    });
+  }
+
   window.onload = () => {
     fetch('content/notification.txt')
-      .then(response => {
-        if (!response.ok) throw new Error("Failed to load notification");
-        return response.text();
-      })
+      .then(response => response.text())
       .then(text => {
-        const trimmed = text.trim();
-        if (trimmed) showNotification(trimmed);
+        const linkedText = linkify(text);
+        showNotification(linkedText);
       })
-      .catch(error => {
-        console.error("Notification error:", error);
+      .catch(err => {
+        console.error("Failed to load notification.txt:", err);
       });
   };
 </script>
+
 <!-- End notification section -->
 
 </body>
