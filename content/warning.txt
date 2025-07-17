@@ -3,14 +3,13 @@ New updates:
 This website is currently under production and continually receives updates.
 Recent updates include:
 
-○ Channelcam page now automatically begins recording when you visit the site, meaning that you can rewind and watch something again during one of the shows
+○ Channelcam has a new advanced page, which removes ads, enables recording, and some other cool features  (BETA)
 ○ Channelcam includes a new PiP (Picture in Picture) mode
-○ Channelcam has all watermarks removed on simple page
-○ Channelcam has a new advanced page (Beta)
 ○ Documentation page has new styling updates
 ○ Legacy Channelcam page redirects to the new page
-○ The website now displays a welcome message
+○ Documentation page has new styling updates
+○ The website now displays a welcome message and updates message (Hint: you are reading one right now)
 ○ And many more!
 
 
-View the changelog.txt file at https://github.com/sddavy/GHMF to see the latest changes, important updates, and more!
+You can view the changelog at https://github.com/sddavy/GHMF/blob/main/changelog.txt to see the lastest updates, or visit the the Github repo at https://github.com/sddavy/GHMF/ to keep track of the latest news, important updates, and more!
