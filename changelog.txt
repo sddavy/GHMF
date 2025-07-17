@@ -1,1 +1,40 @@
-THis is the file that will store the changelog for each succsessive version. Once I stop commiting directly to the main branch. Someday.
+Update 7/17/25:
+---------------
+
+Changes:
+Update .m3u8 stream on https://ghmfhelper.pages.dev/channelcam-advanced page
+Move stream-url file to assets folder
+Update channelcam-advanced.html to dynamically update stream url
+Update stream-url.txt to use the current stream file
+Update channelcam-simple.html to use normal imbed instead of .m3u8 stream
+
+Description:
+Created a text file to pull .m3u8 stream from instead of hardcoding it, which improves ease of maintaining website.
+Fixed issues advanced channelcam not loading, by updating the stream-url.txt file to be the latest stream file I could find.
+Removed the buggy hardcoded stream for the simple channelcam page, and replaced it with a normal IPcamlive imbed, which helps reliability, although it does currently display the WGHN ads.
+
+
+Update 6/9/25:
+--------------
+
+Changes:
+Revert index to original file to avoid bugs with theme styling
+Delete themes directory
+Update index.html with bug fixes
+Update index with bug fixes
+Update index.html for corrected theme CSS path
+Add theme dependancies
+Highly experimental dark/light mode on index page
+Update channelcam.html to include SEO
+Update channelcam-simple.html
+Update documentation.html to include SEO optimization
+Update index.html to include update SEO information
+Add Google tag verification for SEO
+Update sitemap.xml to be Google standard
+Confirm website belongs to me on Google Search
+Add SEO <og> tags to index.html page
+Create robots.txt for SEO
+
+Description:
+Lots of clutter in the changelog, but mostly beta testing of different themes including dark and light mode. These changes were reverted after I determined that updating every page would be to time-consuming.
+However, there was a lot of Search Engine Optimization (SEO) changes to make this site easier to find on Google searches.
