@@ -133,6 +133,47 @@
           height: 450px;
           border: none;
         }
+
+        /* Begin notification section */
+        #notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #222;
+            color: #fff;
+            padding: 15px 20px 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+            opacity: 0;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            transform: translateY(20px);
+            z-index: 9999;
+            max-width: 300px;
+            font-size: 1em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        #notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        #notification .close-btn {
+            margin-left: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #ccc;
+            background: none;
+            border: none;
+        }
+        
+        #notification .close-btn:hover {
+            color: white;
+        }
+        /* End notification section */
         
         /* Change style on smaller screens */
         @media (max-width: 600px) {
@@ -229,5 +270,32 @@
         <a href="https://wghn.com/channel-cam/" class="wghn-button" target="_blank">View on the WGHN website</a>
 
     </main>
+
+<!-- Begin notification section -->
+<div id="notification">
+  <span id="notification-message">This is a notification message.</span>
+  <button class="close-btn" onclick="hideNotification()">×</button>
+</div>
+
+<script>
+  function showNotification(message) {
+    const notification = document.getElementById('notification');
+    const messageSpan = document.getElementById('notification-message');
+    messageSpan.textContent = message;
+    notification.classList.add('show');
+  }
+
+  function hideNotification() {
+    const notification = document.getElementById('notification');
+    notification.classList.remove('show');
+  }
+
+  // Show it on page load
+  window.onload = () => {
+    showNotification("Welcome to the Channel Cam!");
+  };
+</script>
+<!-- End notification section -->
+
 </body>
 </html>
