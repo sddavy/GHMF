@@ -134,7 +134,9 @@ let recorder = null;
 let recording = false;
 let showTime = false;
 
-function loadStream() {
+function loadStream(streamURL) {
+  currentStreamURL = streamURL;
+
   if (hls) {
     hls.destroy();
     hls = null;
@@ -157,7 +159,20 @@ function loadStream() {
 function refreshStream() {
   loadStream();
 }
-
+  
+function fetchStreamURL() {
+  fetch('stream-url.txt')
+    .then(res => {
+      if (!res.ok) throw new Error("Failed to load stream URL");
+      return res.text();
+    })
+    .then(urlText => {
+      const streamURL = urlText.trim();
+      loadStream(streamURL);
+    })
+    .catch(err => console.error("Error fetching stream URL:", err));
+}
+  
 function togglePlay() {
   const btn = document.getElementById('playBtn').firstElementChild;
   if (video.paused) {
@@ -246,7 +261,7 @@ setInterval(() => {
   }
 }, 1000);
 
-window.addEventListener('load', loadStream);
+window.addEventListener('load', fetchStreamURL);
 </script>
 
 </body>
