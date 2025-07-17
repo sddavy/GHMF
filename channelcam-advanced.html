@@ -157,11 +157,12 @@ function loadStream(streamURL) {
 }
 
 function refreshStream() {
-  loadStream();
+  fetchStreamURL();
+  loadStream()
 }
   
 function fetchStreamURL() {
-  fetch('stream-url.txt')
+  fetch('assets/stream-url.txt')
     .then(res => {
       if (!res.ok) throw new Error("Failed to load stream URL");
       return res.text();
