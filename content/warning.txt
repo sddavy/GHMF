@@ -4,10 +4,10 @@ This website is currently under production and continually receives updates.
 Recent updates include:
 
 ○ Channelcam has a new advanced page, which removes ads, enables recording, and some other cool features  (BETA)
-○ Channelcam includes a new PiP (Picture in Picture) mode
-○ Documentation page has new styling updates
+○ Backlighting page includes seven new colors
+○ Backlighting page has a new sleek look
+○ Documentation page has new styling updates and more documentation
 ○ Legacy Channelcam page redirects to the new page
-○ Documentation page has new styling updates
 ○ The website now displays a welcome message and updates message (Hint: you are reading one right now)
 ○ And many more!
 
