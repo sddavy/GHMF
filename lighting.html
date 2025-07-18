@@ -143,6 +143,50 @@
             border: 1px solid #ccc;
             border-radius: 3px;
         }
+        #screen-warning {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.95);
+            color: white;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            text-align: center;
+            padding: 40px;
+            box-sizing: border-box;
+            flex-direction: column;
+        }
+        
+        #screen-warning h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        
+        #screen-warning p {
+            font-size: 1.2em;
+            max-width: 500px;
+        }
+        
+        #dismiss-warning {
+            margin-top: 30px;
+            background: #87CEFA;
+            color: black;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        #dismiss-warning:hover {
+            background: #4682B4;
+        }
+
         @media (max-width: 600px) {
             header img {
                 height: 90px;
@@ -229,6 +273,26 @@
             <tr><td><span class="color-swatch" style="background-color: #000000;"></span>Off</td><td>504-000 505-000 <button class="copy-btn" onclick="copyText('504-000 505-000')">Copy</button></td><td>509-000 510-000 <button class="copy-btn" onclick="copyText('509-000 510-000')">Copy</button></td><td>514-000 515-000 <button class="copy-btn" onclick="copyText('514-000 515-000')">Copy</button></td><td>524-000 525-000 <button class="copy-btn" onclick="copyText('524-000 525-000')">Copy</button></td><td>529-000 530-000 <button class="copy-btn" onclick="copyText('529-000 530-000')">Copy</button></td><td>534-000 535-000 <button class="copy-btn" onclick="copyText('534-000 535-000')">Copy</button></td></tr>
         </table>
     </main>
+
+    <div id="screen-warning">
+    <h2>Oops!</h2>
+    <p>It looks like your screen is too small! Please switch to a larger screen for the best experience, or try resizing your window. You can try to make it work anyway by clicking below.</p>
+    <button id="dismiss-warning">× Dismiss</button>
+</div>
+<script>
+    function showWarningIfSmallScreen() {
+        const warning = document.getElementById('screen-warning');
+        const dismissBtn = document.getElementById('dismiss-warning');
+        if (window.innerWidth < 800) {
+            warning.style.display = 'flex';
+        }
+
+        dismissBtn.addEventListener('click', () => {
+            warning.style.display = 'none';
+        });
+    window.addEventListener('load', showWarningIfSmallScreen);
+</script>
+    
 </body>
 </html>
 
