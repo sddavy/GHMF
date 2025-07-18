@@ -82,12 +82,14 @@
         }
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             margin-top: 15px;
             background: #444;
             color: white;
-            font-size: 1.5em  
-            text-align: center;
+            font-size: 1.5em;
+            border-radius: 10px;
+            overflow: hidden;
         }
         th, td {
             border: 1px solid white;
@@ -99,6 +101,19 @@
             background: #222;
             font-size: 1.5em
         }
+        th:first-child {
+            border-top-left-radius: 10px;
+        }
+        th:last-child {
+            border-top-right-radius: 10px;
+        }
+        tr:last-child td:first-child {
+            border-bottom-left-radius: 10px;
+        }
+        tr:last-child td:last-child {
+            border-bottom-right-radius: 10px;
+        }
+        
         .copy-btn {
             background: #87CEFA;
             border: none;
