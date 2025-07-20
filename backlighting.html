@@ -189,6 +189,26 @@
         #dismiss-warning:hover {
             background: #4682B4;
         }
+        
+        #copy-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #323232;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 1em;
+            opacity: 0;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translateY(20px);
+        }
+        #copy-notification.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
         @media (max-width: 600px) {
             header img {
@@ -222,12 +242,22 @@
 
     </style>
     
-    <script>
-        function copyText(text) {
-            navigator.clipboard.writeText(text).then(() => {
-            });
-        }
-    </script>
+   <script>
+    function copyText(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            showCopyNotification();
+        });
+    }
+
+    function showCopyNotification() {
+        const notification = document.getElementById('copy-notification');
+        notification.classList.add('show');
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 2000);
+    }
+</script>
+
     
 </head>
 <body>
@@ -296,6 +326,8 @@
     window.addEventListener('load', showWarningIfSmallScreen);
 </script>
     
+<div id="copy-notification">Copied to Clipboard</div>
+   
 </body>
 </html>
 
