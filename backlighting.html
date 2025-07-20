@@ -163,17 +163,14 @@
             box-sizing: border-box;
             flex-direction: column;
         }
-        
         #screen-warning h2 {
             font-size: 2em;
             margin-bottom: 20px;
         }
-        
         #screen-warning p {
             font-size: 1.2em;
             max-width: 500px;
         }
-        
         #dismiss-warning {
             margin-top: 30px;
             background: #87CEFA;
@@ -185,30 +182,33 @@
             cursor: pointer;
             transition: background 0.3s;
         }
-        
         #dismiss-warning:hover {
             background: #4682B4;
         }
         
         #copy-notification {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #323232;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-size: 1em;
+            bottom: 25px;
+            right: 25px;
+            background-color: #87CEFA;
+            color: black;
+            padding: 14px 24px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
             opacity: 0;
-            transition: opacity 0.4s ease, transform 0.4s ease;
+            transition: opacity 0.3s ease, transform 0.3s ease;
             pointer-events: none;
             z-index: 9999;
-            transform: translateY(20px);
+            transform: scale(0.9) translateY(30px);
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
         }
+        
         #copy-notification.show {
             opacity: 1;
-            transform: translateY(0);
+            transform: scale(1) translateY(0);
         }
+
 
         @media (max-width: 600px) {
             header img {
