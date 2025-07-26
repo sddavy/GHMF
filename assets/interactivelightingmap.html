@@ -702,5 +702,16 @@ function showToast(message) {
   opacity: 0;
 ">Copied to clipboard</div>
 
+<script>
+  function sendHeight() {
+    const height = document.body.scrollHeight;
+    window.parent.postMessage({ type: 'resize-iframe', height }, '*');
+  }
+
+  // Send height on load and when resizing
+  window.addEventListener('load', sendHeight);
+  window.addEventListener('resize', sendHeight);
+</script>
+
 </body>
 </html>
