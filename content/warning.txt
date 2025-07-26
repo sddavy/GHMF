@@ -4,13 +4,13 @@ This website is currently under production and continually receives updates.
 Recent updates include:
 
 ○ Updated colors and styling sitewide
-○ Brand new interactive lighting map which will be released soon!
+○ Brand new interactive lighting map, making advanced lighting easier than ever!
 ○ Channelcam has a new advanced page, which removes ads, enables recording, and some other cool features  (BETA)
-○ Backlighting page includes seven new colors
+○ Backlighting page includes EVERY color the fountain is capable of
 ○ Backlighting page has a new sleek look
 ○ Documentation page has new styling updates and more documentation
 ○ Legacy Channelcam page redirects to the new page
-○ The website now displays a welcome message and updates message (Hint: you are reading one right now)
+○ The website now displays a welcome message and an updates message (Hint: you are reading it right now)
 ○ And many more!
 
 
