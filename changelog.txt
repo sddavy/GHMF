@@ -1,3 +1,14 @@
+Update 7/26/25:
+---------------
+
+Changes:
+Added the new interactive lighting map at https://ghmfhelper.pages.dev/lightingmap
+Small text size change on backlighting page
+
+Description:
+Changed styling of interactive lighting map I was working on as a different project to match the styling on this website, uploaded the .html file, and imbedded it as a iframe into a new page.
+
+
 Update 7/17/25:
 ---------------
 
