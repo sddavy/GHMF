@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>GHMF Interactive Lighting Map Version 4.0</title>
+<style>
+   body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    background: #606060;
+    color: white;
+    font-size: 1.0em;
+        }
+  table {
+    border-collapse: collapse;
+    margin: 1rem 0;
+    margin-right: 50px;
+    margin-left: 50px;
+    margin-top: 50px;
+    
+  }
+  #grid-table td,
+  #grid-table th {
+  color: black !important;
+  }
+
+  th, td {
+    border: none;
+    width: 60px;
+    height: 40px;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+  th {
+    background: #ddd;
+    cursor: default;
+  }
+  td.empty {
+    cursor: default;
+    background: #606060;
+  }
+  /* Hide headers and their borders */
+  table.hide-headers th {
+    display: none;
+  }
+  /* Remove borders on empty cells at edges when headers hidden */
+  table.hide-headers td.empty {
+    border: none;
+  }
+  select {
+   background-color: #444;
+   color: white;
+   border: 1px solid #888;
+   border-radius: 6px;
+  }
+
+  select option {
+   background-color: #444;
+   color: white;
+  }
+
+  #color-buttons {
+    margin: 10px 0;
+  }
+  #color-buttons button {
+    border: none;
+    margin-right: 6px;
+    margin-left: 6px;
+    margin-top: 9px;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+    background: white;
+    min-width: 200px;
+    
+  }
+  #color-buttons button.selected {
+    background: #eee;
+    font-weight: bold;
+  }
+  #commands-output {
+    margin-top: 12px;
+    font-family: monospace;
+    white-space: pre-wrap;
+  }
+  #commands-output button {
+    border-radius: 4px;
+    border: none;
+    margin-left: 10px;
+    padding: 6px 12px;
+    cursor: pointer;
+  }
+  #copy-btn {
+   color: black;
+   background-color: #23a4dd;
+   border: none;
+   padding: 10px 20px;
+   display: inline-block;
+   border-radius: 4px;
+   font-size: 0.9em;
+   white-space: nowrap;
+   
+  }
+  #copy-btn:hover {
+   background: #87CEFA;
+   color: black;
+  }
+  #reset-btn {
+   color: black;
+   background-color: #329946;
+   border: none;
+   padding: 10px 20px;
+   display: inline-block;
+   border-radius: 4px;
+   font-size: 0.9em;
+   white-space: nowrap;
+   cursor: pointer;
+  }
+  #reset-btn:hover {
+   background-color: #87CEFA;
+  }
+
+</style>
+</head>
+<body>
+
+<table id="grid-table">
+  <thead>
+    <tr id="thead-row"></tr>
+  </thead>
+  <tbody id="tbody"></tbody>
+</table>
+
+<div id="color-buttons"></div>
+
+<!-- Toolbox row -->
+<div id="top-controls" style="display: flex; justify-content: space-between; align-items: center; padding: 50px 10px;">
+  <div style="display: flex; gap: 10px;">
+    <button id="copy-btn">Copy</button>
+    <button id="reset-btn">Reset</button>
+  </div>
+  <div>
+    <label for="intensity-select" style="margin-right: 6px;">Intensity:</label>
+    <select id="intensity-select" style="padding: 3px;">
+      <option value="0">100%</option>
+      <option value="9">90%</option>
+      <option value="8">80%</option>
+      <option value="7">70%</option>
+      <option value="6">60%</option>
+      <option value="5">50%</option>
+      <option value="4">40%</option>
+      <option value="3">30%</option>
+      <option value="2">20%</option>
+      <option value="1">10%</option>
+    </select>
+  </div>
+</div>
+
+<!-- CTL commands section -->
+<div id="ctl-wrapper" style="margin: 0px 10px;">
+
+  <!-- Header Bar -->
+  <div id="ctl-toggle" 
+       style="background: #444; color: white; padding: 6px 10px; border-radius: 9px; 
+              display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: bold;">
+    <span>CTL Commands</span>
+    <span id="toggle-arrow" style="transition: transform 0.2s;">&#9654;</span>
+  </div>
+
+  <!-- Collapsible Content -->
+  <div id="ctl-content" 
+       style="display: none; background: #666; color: white; padding: 14px 20px; 
+              margin-top: 8px; border-radius: 10px; font-family: monospace;">
+    <pre id="commands-text" style="margin: 0; white-space: pre-wrap;"></pre>
+  </div>
+
+</div>
+
+<script>
+  const toggle = document.getElementById('ctl-toggle');
+  const content = document.getElementById('ctl-content');
+  const arrow = document.getElementById('toggle-arrow');
+
+  toggle.addEventListener('click', () => {
+    const isOpen = content.style.display === 'block';
+    content.style.display = isOpen ? 'none' : 'block';
+    arrow.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(90deg)';
+  });
+</script>
+
+<script>
+(() => {
+  // ============ Configuration ============
+
+  // Toggle headers: true = show, false = hide
+  // Change this for debug when adding new lights
+  let showGridHeaders = false;
+  
+  // Define intensity map
+  const intensityOpacityMap = {
+  '0': 1.0,  // 100%
+  '9': 0.9,
+  '8': 0.8,
+  '7': 0.7,
+  '6': 0.6,
+  '5': 0.5
+};
+
+  // Colors data: color code is last 3 digits in command
+  const colors = [
+    
+    { name: 'Whiteish (Off-White)', code: '008', hex: '#d1ffdb' },
+    { name: 'Light Red (Pink)', code: '009', hex: '#ff0062' },
+    { name: 'Red', code: '001', hex: '#ff0000' },
+    { name: 'Light Orange (Peach)', code: '013', hex: '#ff8000' },
+    { name: 'Orange', code: '005', hex: '#ffb900' },
+    { name: 'Spring Green (Mint)', code: '012', hex: '#00ee76' },
+    { name: 'Yellow', code: '004', hex: '#ffff00' },
+    { name: 'Light Green', code: '014', hex: '#a6ff00' },
+    { name: 'Green', code: '006', hex: '#00ff00' },
+    { name: 'Light Blue', code: '010', hex: '#33ffff' },
+    { name: 'Blue', code: '002', hex: '#0000ff' },
+    { name: 'Violet', code: '003', hex: '#ba00ff' },
+    { name: 'Light Violet', code: '011', hex: '#9999ff' },
+    { name: 'Magenta (Voice)', code: '007', hex: '#cc00cc' },
+    { name: 'White', code: '015', hex: '#ffffff' },
+    { name: 'Off', code: '000', hex: '#444' },
+    { name: 'Blank', code: '999', hex: '#999' },
+
+  ];
+
+  // Lights data:
+  // Each light has:
+  //  id: numeric id for command prefix (e.g., 536)
+  //  name: string to display in the grid cell
+  //  row, col: position in grid (0-based for columns, 1-based for rows)
+  //  rowspan, colspan: optional, default 1
+  //  linkedIds: [DDD, DDD, DDD]: link clusters together
+  const lights = [
+     
+    //  Module 1
+    { id: 17, name: 'Module 1', row: 7, col: 0, rowspan: 0, colspan: 3, linkedIds: [504, 505, 501, 502, 503]},
+    { id: 504, name: '504', row: 8, col: 0 },
+    { id: 505, name: '505', row: 8, col: 2 },
+    { id: 501, name: '501', row: 10, col: 0 },
+    { id: 502, name: '502', row: 10, col: 2 },
+    { id: 503, name: '503', row: 9, col: 1 },
+    
+    //  Module 2
+    { id: 18, name: 'Module 2', row: 7, col: 4, rowspan: 0, colspan: 3, linkedIds: [509, 510, 507, 506, 508] },
+    { id: 509, name: '509', row: 8, col: 4 },
+    { id: 510, name: '510', row: 8, col: 6 },
+    { id: 507, name: '507', row: 10, col: 4 },
+    { id: 506, name: '506', row: 10, col: 6 },
+    { id: 508, name: '508', row: 9, col: 5 },
+    
+    //  Module 3
+    { id: 19, name: 'Module 3', row: 7, col: 8, rowspan: 0, colspan: 3, linkedIds: [514, 515, 512, 511, 513] },
+    { id: 514, name: '514', row: 8, col: 8 },
+    { id: 515, name: '515', row: 8, col: 10 },
+    { id: 512, name: '512', row: 10, col: 8 },
+    { id: 511, name: '511', row: 10, col: 10 },
+    { id: 513, name: '513', row: 9, col: 9 },
+    
+    //  Module 4
+    { id: 20, name: 'Module 4', row: 7, col: 12, rowspan: 0, colspan: 3, linkedIds: [519, 520, 516, 517, 518]  },
+    { id: 519, name: '519', row: 8, col: 12 },
+    { id: 520, name: '520', row: 8, col: 14 },
+    { id: 516, name: '516', row: 10, col: 12 },
+    { id: 517, name: '517', row: 10, col: 14 },
+    { id: 518, name: '518', row: 9, col: 13 },
+    
+    //  Module 5
+    { id: 21, name: 'Module 5', row: 7, col: 16, rowspan: 0, colspan: 3, linkedIds: [524, 525, 521, 522, 523] },
+    { id: 524, name: '524', row: 8, col: 16 },
+    { id: 525, name: '525', row: 8, col: 18 },
+    { id: 521, name: '521', row: 10, col: 16 },
+    { id: 522, name: '522', row: 10, col: 18 },
+    { id: 523, name: '523', row: 9, col: 17 },
+    
+    //  Module 6
+    { id: 22, name: 'Module 6', row: 7, col: 20, rowspan: 0, colspan: 3, linkedIds: [529, 530, 526, 527, 528] },
+    { id: 529, name: '529', row: 8, col: 20 },
+    { id: 530, name: '530', row: 8, col: 22 },
+    { id: 526, name: '526', row: 10, col: 20 },
+    { id: 527, name: '527', row: 10, col: 22 },
+    { id: 528, name: '528', row: 9, col: 21 },
+    
+    //  Module 7
+    { id: 23, name: 'Module 7', row: 7, col: 24, rowspan: 0, colspan: 3, linkedIds: [534, 535, 531, 532, 533] },
+    { id: 534, name: '534', row: 8, col: 24 },
+    { id: 535, name: '535', row: 8, col: 26 },
+    { id: 531, name: '531', row: 10, col: 24 },
+    { id: 532, name: '532', row: 10, col: 26 },
+    { id: 533, name: '533', row: 9, col: 25 },
+    
+    //  Left Dove
+    { id: 544, name: 'Left Dove', row: 4, col: 6, rowspan: 0, colspan: 3 },
+    
+    //  Right Dove
+    { id: 545, name: 'Right Dove', row: 4, col: 18, rowspan: 0, colspan: 3 },
+    
+    //  Spout/Helix
+    { id: 55, name: 'Spout/Helix', row: 4, col: 12, rowspan: 0, colspan: 3, linkedIds: [542, 543] },
+    { id: 542, name: '542', row: 5, col: 12 },
+    { id: 543, name: '543', row: 5, col: 14 },
+    
+    //  Peacock
+    { id: 27, name: 'Peacock', row: 1, col: 9, rowspan: 0, colspan: 9, linkedIds: [536, 537, 538, 538, 539, 540, 541] },
+    { id: 536, name: '536', row: 2, col: 9 },
+    { id: 537, name: '537', row: 2, col: 10 },
+    { id: 538, name: '538', row: 2, col: 11 },
+    { id: 539, name: '539', row: 2, col: 15 },
+    { id: 540, name: '540', row: 2, col: 16 },
+    { id: 541, name: '541', row: 2, col: 17 },
+    
+  ];
+
+  // ============ Variables ============
+  let selectedColor = colors.find(c => c.code === '999'); // default to Blank
+
+  let lightOverrides = {}; // { id: 'colorCode' } — manually set by user
+  let lightInherited = {}; // { id: 'parentId' } — lights inheriting from a parent
+
+  // ============ Helpers ============
+
+  // Converts 0-based col index to letter (0->A, 1->B, ...)
+  function indexToCol(n) {
+    return String.fromCharCode(65 + n);
+  }
+
+  // Find max rows and columns based on lights
+  function findMaxGrid() {
+    let maxRow = 0, maxCol = 0;
+    for (const light of lights) {
+      const rEnd = light.row + (light.rowspan || 1) - 1;
+      const cEnd = light.col + (light.colspan || 1) - 1;
+      if (rEnd > maxRow) maxRow = rEnd;
+      if (cEnd > maxCol) maxCol = cEnd;
+    }
+    return { maxRow, maxCol };
+  }
+
+  // ============ DOM references ============
+  const table = document.getElementById('grid-table');
+  const theadRow = document.getElementById('thead-row');
+  const tbody = document.getElementById('tbody');
+  const colorButtonsDiv = document.getElementById('color-buttons');
+  const commandsText = document.getElementById('commands-text');
+  const copyBtn = document.getElementById('copy-btn');
+
+  // ============ Build Color Buttons ============
+
+  function buildColorButtons() {
+    colorButtonsDiv.innerHTML = '';
+    colors.forEach(color => {
+      const btn = document.createElement('button');
+      btn.textContent = color.name;
+      btn.style.backgroundColor = color.hex;
+      
+      const isDark = isDarkColor(color.hex);
+        btn.style.color = isDark ? '#fff' : '#000';
+
+      if (color === selectedColor) btn.classList.add('selected');
+
+      btn.addEventListener('click', () => {
+        selectedColor = color;
+        updateColorButtons();
+      });
+      colorButtonsDiv.appendChild(btn);
+    });
+  }
+    const resetBtn = document.getElementById('reset-btn');
+
+    resetBtn.addEventListener('click', () => {
+      // Set all lights to 'Blank' color code '999'
+      document.querySelectorAll('td.light-cell').forEach(td => {
+        td.dataset.colorCode = '999';
+      });
+      
+      // Clear overrides
+      lightOverrides = {};
+      
+      // Update colors and commands output
+      updateGridColors();
+      updateCommandsOutput();
+    });
+
+  function updateColorButtons() {
+    [...colorButtonsDiv.children].forEach(btn => {
+      btn.classList.toggle('selected', btn.textContent === selectedColor.name);
+    });
+  }
+
+  // ============ Build Grid ============
+
+  let maxRow, maxCol;
+
+  // Brack occupied cells for multi-cell lights to skip rendering those cells twice
+  let occupiedCells;
+
+function isDarkColor(hex) {
+  // Remove hash if present
+  hex = hex.replace('#', '');
+  
+  // Convert short hex to full
+  if (hex.length === 3) {
+    hex = hex.split('').map(ch => ch + ch).join('');
+  }
+
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+
+  // Perceived brightness formula
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+
+  return brightness < 128; // Lower is darker
+}
+
+  function buildGrid() {
+    const dims = findMaxGrid();
+    maxRow = dims.maxRow;
+    maxCol = dims.maxCol;
+
+    theadRow.innerHTML = '';
+    tbody.innerHTML = '';
+    occupiedCells = new Set();
+
+    // Build column headers if shown
+    if (showGridHeaders) {
+      // Top-left empty corner cell
+      const cornerTh = document.createElement('th');
+      cornerTh.textContent = '';
+      theadRow.appendChild(cornerTh);
+
+      for (let c = 0; c <= maxCol; c++) {
+        const th = document.createElement('th');
+        th.textContent = indexToCol(c);
+        theadRow.appendChild(th);
+      }
+    } else {
+      // Insert empty invisible th for layout if needed
+      const emptyTh = document.createElement('th');
+      emptyTh.style.display = 'none';
+      theadRow.appendChild(emptyTh);
+    }
+
+    // Build body rows
+    for (let r = 1; r <= maxRow; r++) {
+      const tr = document.createElement('tr');
+
+      // Row headers if shown
+      if (showGridHeaders) {
+        const th = document.createElement('th');
+        th.textContent = r;
+        tr.appendChild(th);
+      } else {
+        const emptyTh = document.createElement('th');
+        emptyTh.style.display = 'none';
+        tr.appendChild(emptyTh);
+      }
+
+      for (let c = 0; c <= maxCol; c++) {
+        const cellKey = r + '-' + c;
+        if (occupiedCells.has(cellKey)) {
+          // Skip cells that are part of a rowspan/colspan light already rendered
+          continue;
+        }
+
+        // Find a light that starts exactly at this cell
+        const light = lights.find(l => l.row === r && l.col === c);
+
+        if (light) {
+          const td = document.createElement('td');
+          td.textContent = light.name;
+          td.dataset.id = light.id;
+          td.dataset.row = r;
+          td.dataset.col = c;
+          td.dataset.colorCode = '999'; // default blank color code
+
+          // Apply rowspan and colspan if any
+          if (light.rowspan && light.rowspan > 1) td.rowSpan = light.rowspan;
+          if (light.colspan && light.colspan > 1) td.colSpan = light.colspan;
+
+          // Mark covered cells as occupied to skip rendering those
+          const rowsCovered = light.rowspan || 1;
+          const colsCovered = light.colspan || 1;
+          for (let rr = r; rr < r + rowsCovered; rr++) {
+            for (let cc = c; cc < c + colsCovered; cc++) {
+              if (!(rr === r && cc === c)) {
+                occupiedCells.add(rr + '-' + cc);
+              }
+            }
+          }
+
+          td.classList.add('light-cell');
+          tr.appendChild(td);
+        } else {
+          // Empty cell
+          const td = document.createElement('td');
+          td.classList.add('empty');
+          tr.appendChild(td);
+        }
+      }
+
+      tbody.appendChild(tr);
+    }
+
+    // Toggle hide headers class on table
+    if (!showGridHeaders) {
+      table.classList.add('hide-headers');
+      removeEmptyBorders();
+    } else {
+      table.classList.remove('hide-headers');
+      resetBorders();
+    }
+  }
+
+  // ============ Color & Command Logic ============
+
+  function updateGridColors() {
+  document.querySelectorAll('td.light-cell').forEach(td => {
+    const code = td.dataset.colorCode;
+    const baseCode = code?.slice(-3);
+    const color = colors.find(c => c.code.slice(1) === baseCode.slice(1));
+    const opacity = intensityOpacityMap[code?.charAt(0)] || 1;
+
+    td.style.backgroundColor = color ? color.hex : '#fff';
+    td.style.opacity = opacity;
+
+    const isDark = isDarkColor(color?.hex || '#fff');
+    td.style.color = isDark ? '#fff' : '#000';
+  });
+}
+
+  function updateCommandsOutput() {
+  const commands = [];
+  document.querySelectorAll('td.light-cell').forEach(td => {
+    const id = td.dataset.id;
+    const colorCode = td.dataset.colorCode || '999';
+
+    // Only include codes that are not blank
+    if (!colorCode.startsWith('9')) {
+      commands.push(`${id}-${colorCode}`);
+    }
+  });
+  commandsText.textContent = commands.join(' ');
+}
+
+  // ============ Border removal for empty edges ============
+
+  function removeEmptyBorders() {
+    // Remove borders on empty cells that are on edges (top, bottom, left, right)
+    // when headers hidden
+
+    // Get all cells and remove borders where the neighbor cells do not exist or empty
+
+    const rows = tbody.querySelectorAll('tr');
+    for(let r = 0; r < rows.length; r++) {
+      const cells = rows[r].children;
+      for(let c = 1; c < cells.length; c++) { // skip row header th at 0 index
+        const cell = cells[c];
+        if (!cell.classList.contains('empty')) continue;
+
+        // Check neighbors:
+        // Top cell
+        let topCell = null;
+        if (r > 0) topCell = rows[r-1].children[c];
+        // Bottom cell
+        let bottomCell = null;
+        if (r < rows.length - 1) bottomCell = rows[r+1].children[c];
+        // Left cell
+        let leftCell = cells[c-1];
+        // Right cell
+        let rightCell = cells[c+1];
+
+        // Remove border if neighbor is empty or missing
+        if (!topCell || topCell.classList.contains('empty')) cell.style.borderTop = 'none';
+        if (!bottomCell || bottomCell.classList.contains('empty')) cell.style.borderBottom = 'none';
+        if (!leftCell || leftCell.classList.contains('empty')) cell.style.borderLeft = 'none';
+        if (!rightCell || rightCell.classList.contains('empty')) cell.style.borderRight = 'none';
+      }
+    }
+  }
+
+  function resetBorders() {
+    // Reset all borders on empty cells
+    document.querySelectorAll('td.empty').forEach(td => {
+      td.style.border = '1px solid #aaa';
+    });
+  }
+
+  // ============ Event Listeners ============
+
+  // Click on light cell to set color
+  tbody.addEventListener('click', e => {
+  const td = e.target.closest('td.light-cell');
+  if (!td) return;
+
+  const id = parseInt(td.dataset.id);
+  const light = lights.find(l => l.id === id);
+  const intensityDigit = document.getElementById('intensity-select').value;
+  const baseCode = selectedColor.code; // e.g. '002' for blue
+
+  // Don't apply if base code is invalid
+  if (baseCode.length !== 3 || isNaN(baseCode)) return;
+
+  // Create new code with intensity: e.g. '002' → '502'
+  const newCode = intensityDigit + baseCode.slice(1);
+  const opacity = intensityOpacityMap[intensityDigit] || 1;
+
+  const applyTo = (lightId) => {
+    const cell = document.querySelector(`td[data-id='${lightId}']`);
+    if (!cell) return;
+    cell.dataset.colorCode = newCode;
+    cell.style.backgroundColor = selectedColor.hex;
+    cell.style.opacity = opacity;
+
+    const isDark = isDarkColor(selectedColor.hex);
+    cell.style.color = isDark ? '#fff' : '#000';
+  };
+
+  // Apply to this light and any linked lights
+  applyTo(id);
+  if (light?.linkedIds) {
+    light.linkedIds.forEach(applyTo);
+  }
+
+  updateCommandsOutput();
+});
+
+  // Copy button functionality
+  copyBtn.addEventListener('click', () => {
+  if (!commandsText.textContent) return;
+  navigator.clipboard.writeText(commandsText.textContent).then(() => {
+    showToast('Copied to clipboard');
+  });
+});
+
+// Toast function
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.style.visibility = 'visible';
+  toast.style.opacity = '1';
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.visibility = 'hidden';
+  }, 2000); // Toast visible for 2 seconds
+}
+
+  // ============ Initialization ============
+
+  function init() {
+  buildColorButtons();
+  buildGrid();
+  updateGridColors();
+  updateCommandsOutput();
+  
+  // Reset button event listener
+  const resetBtn = document.getElementById('reset-btn');
+  resetBtn.addEventListener('click', () => {
+    document.querySelectorAll('td.light-cell').forEach(td => {
+      td.dataset.colorCode = '999';
+    });
+    lightOverrides = {};
+    updateGridColors();
+    updateCommandsOutput();
+  });
+}
+
+  init();
+
+})();
+</script>
+
+<div id="toast" style="
+  visibility: hidden;
+  min-width: 200px;
+  background-color: #333;
+  color: #329946;
+  text-align: center;
+  border-radius: 8px;
+  padding: 10px;
+  position: fixed;
+  z-index: 999;
+  right: 20px;
+  bottom: 30px;
+  font-size: 17px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+  transition: visibility 0s, opacity 0.5s ease-in-out;
+  opacity: 0;
+">Copied to clipboard</div>
+
+</body>
+</html>
