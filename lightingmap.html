@@ -155,13 +155,23 @@
     <!-- Begin main content -->
     <main>
       <h2>Lighting Map</h2>
-      <iframe src="assets/interactivelightingmap.html" width="100%" height="700" style="border: none; border-radius: 8px;"></iframe>
-    </main>
-
-
+          <iframe id="lightingMapFrame" src="assets/interactivelightingmap.html"
+          style="width: 100%; border: none; border-radius: 8px;"></iframe>
     </main>
     <!-- End main content -->
-    
+
+ <!-- Begin resize tool -->
+<script>
+  window.addEventListener('message', function(event) {
+    if (event.data.type === 'resize-iframe') {
+      const iframe = document.getElementById('lightingMapFrame');
+      if (iframe) {
+        iframe.style.height = event.data.height + 'px';
+      }
+    }
+  });
+</script>
+<!-- End resize tool -->
 
 </body>
 </html>
