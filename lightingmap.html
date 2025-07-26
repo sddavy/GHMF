@@ -155,15 +155,14 @@
     <!-- Begin main content -->
     <main>
       <h2>Lighting Map</h2>
-          <iframe id="lightingMapFrame" src="assets/interactivelightingmap.html"
-          style="width: 100%; border: none; border-radius: 8px;"></iframe>
+          <iframe id="lightingMapFrame" src="assets/interactivelightingmap.html" style="width:100%; border:none;"></iframe>
     </main>
     <!-- End main content -->
 
  <!-- Begin resize tool -->
 <script>
   window.addEventListener('message', function(event) {
-    if (event.data.type === 'resize-iframe') {
+    if (event.data.type === 'setHeight') {
       const iframe = document.getElementById('lightingMapFrame');
       if (iframe) {
         iframe.style.height = event.data.height + 'px';
