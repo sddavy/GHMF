@@ -708,11 +708,18 @@ function showToast(message) {
 
 <script>
   function sendHeight() {
-    const height = document.documentElement.scrollHeight;
-    window.parent.postMessage({ type: 'setHeight', height: height }, '*');
-  }
-  window.onload = sendHeight;
-  window.onresize = sendHeight;
+  const body = document.body;
+  const html = document.documentElement;
+  const height = Math.max(
+    body.scrollHeight, body.offsetHeight,
+    html.clientHeight, html.scrollHeight, html.offsetHeight
+  );
+  window.parent.postMessage({ type: 'setHeight', height: height }, '*');
+}
+
+window.onload = sendHeight;
+window.onresize = sendHeight;
+setInterval(sendHeight, 500);
 </script>
 
 </body>
