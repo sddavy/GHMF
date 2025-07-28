@@ -1,1 +1,0 @@
-NOTE: The camera position is controlled by WGHN, and may not be pointing towards the fountain. The station usually moves the camera to face towards the fountain at 9PM EST, and back towards the channel at 11PM EST, but sometimes this does not happen. If this is the case, you may contact WGHN at https://wghn.com/connect/, and they will do their best to address the issue shortly.
