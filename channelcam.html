@@ -310,7 +310,7 @@
   }
 
   window.onload = () => {
-    fetch('content/notification.txt')
+    fetch('assets/notification-message.txt')
       .then(response => response.text())
       .then(text => {
         const linkedText = linkify(text);
