@@ -272,7 +272,7 @@
     (!suppressWarning && !alreadyShownThisSession);
 
   if (shouldShowPopup) {
-    const fileToLoad = isFirstVisit ? 'content/welcome.txt' : 'content/warning.txt';
+    const fileToLoad = isFirstVisit ? 'assets/welcome-message.txt' : 'assets/changelog-message.txt';
 
     fetch(fileToLoad)
       .then(response => {
