@@ -1,3 +1,15 @@
+Update 7/28/25:
+---------------
+
+Changes:
+Added new 404 page to be used for broken or missing pages
+Changed the name of the docs page to be "Resources"
+
+Description:
+Shows a clean error message when the user navigates to a missing page, changes the documentation page to support more kinds of documents by changing the name to "Resources".
+
+
+
 Update 7/26/25:
 ---------------
 
